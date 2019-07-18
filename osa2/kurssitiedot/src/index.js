@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
+
 const Header = (props) => {
   return (
     <div>
@@ -26,11 +27,28 @@ const Content = (props) => {
     </div>
   )
 }
+const Total = (props) => {
+  const { parts } = props
+  const allExercises = parts.map(num => num.exercises)
+  let result = 0
+  allExercises.forEach(num => {
+    result += num
+  });
+    
+  return (
+    <div>
+      <p>
+        <b>Number of exercises {result} </b>
+      </p>
+    </div>
+  )
+}
 const Course = ({ course }) => {
   return (
     <div>
       <Header course={course.name} />
       <Content parts={course.parts} />
+      <Total parts={course.parts} />
     </div>
   )
 }
@@ -61,15 +79,6 @@ const App = () => {
       </div>
     )
 }
-const Total = (props) => {
-  const result = props.parts[0].exercises + props.parts[1].exercises + props.parts[2].exercises
-  return (
-    <div>
-      <p>
-        Number of exercises {result}
-      </p>
-    </div>
-  )
-}
+
 
 ReactDOM.render(<App />, document.getElementById('root'))
