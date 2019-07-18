@@ -30,11 +30,9 @@ const Content = (props) => {
 const Total = (props) => {
   const { parts } = props
   const allExercises = parts.map(num => num.exercises)
-  let result = 0
-  allExercises.forEach(num => {
-    result += num
-  });
-    
+  const result = allExercises.reduce((accumulator, currentValue) => 
+  accumulator + currentValue)
+
   return (
     <div>
       <p>
