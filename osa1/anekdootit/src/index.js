@@ -1,36 +1,56 @@
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
-import { jsxClosingElement } from '@babel/types';
-
 
 const Button = (props) => (
     <button onClick={props.handleClick}>{props.text}</button>
 )
-
-const App = (props) => {
-  const [selected, setSelected] = useState(0)
-  const points = new Array(anecdotes.length).fill(0)
-  const copy = [...points]
-  const addPoints = () => {
-    copy[selected] += 1
+const MostVoted = ({points}) => {
+  let mostVotes = points[0]
+  let indexOfMostVotes = 0
+  for (let i = 0; i < points.length; i++) {
+    if (points[i] > mostVotes) {
+      mostVotes = points[i]
+      indexOfMostVotes = i
+    }
   }
-  
+  if (mostVotes === 0) {
+    return (
+      'No votes given'
+    )
+  } else {
+    return (
+      <div>
+        {anecdotes[indexOfMostVotes]}
+      </div>
+    )
+  }
+}
 
-  console.log(points)
-  console.log(selected)
+const App = () => {
+  const [selected, setSelected] = useState(0)
+  const [points, setPoints] = useState(array)
   
+  const addPoint = () => {
+    const copy=[...points]
+    copy[selected] += 1
+    setPoints(copy)
+  }
+
   return (
     <div>
-      {props.anecdotes[selected]}
+      <h2>Anecdote of the day</h2>
+      {anecdotes[selected]}
       <p>
-        <Button handleClick={() => addPoints} text={'vote'} />
+        <Button handleClick={() => addPoint()} text={'vote'} />
         <Button handleClick={() => setSelected(Math.floor(Math.random() * anecdotes.length))} text = {'next anecdote'} />
       </p>
-      
+      <div>
+        <h2>Anecdote with most votes</h2>
+          <MostVoted points={points} />
+      </div>
     </div>
   )
 }
-
 const anecdotes = [
   'If it hurts, do it more often',
   'Adding manpower to a late software project makes it later!',
@@ -39,6 +59,8 @@ const anecdotes = [
   'Premature optimization is the root of all evil.',
   'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.'
 ]
+
+const array = new Array(anecdotes.length).fill(0)
 
 ReactDOM.render(
   <App anecdotes={anecdotes} />,
