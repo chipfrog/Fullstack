@@ -13,17 +13,14 @@ const MostVoted = ({points}) => {
       indexOfMostVotes = i
     }
   }
-  if (mostVotes === 0) {
-    return (
-      'No votes given'
-    )
-  } else {
-    return (
+  return (
       <div>
         {anecdotes[indexOfMostVotes]}
+        <div>
+          {`has ${points[indexOfMostVotes]} votes`}
+        </div>
       </div>
     )
-  }
 }
 
 const App = () => {
@@ -40,6 +37,9 @@ const App = () => {
     <div>
       <h2>Anecdote of the day</h2>
       {anecdotes[selected]}
+      <div>
+        {`has ${points[selected]} votes`}
+      </div>
       <p>
         <Button handleClick={() => addPoint()} text={'vote'} />
         <Button handleClick={() => setSelected(Math.floor(Math.random() * anecdotes.length))} text = {'next anecdote'} />
