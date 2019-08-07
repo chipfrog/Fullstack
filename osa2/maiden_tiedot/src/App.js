@@ -3,16 +3,15 @@ import axios from 'axios'
 import Filter from './components/Filter'
 import AllCountries from './components/AllCountries'
 
-
 const App = () => {
   const [ countries, setCountries ] = useState([])
   const [ newFilter, setNewFilter ] = useState('')
+  const [ clicked, setClicked ] = useState(null)
 
   useEffect(() => {
     axios
       .get('https://restcountries.eu/rest/v2/all')
       .then(response => {
-        console.log('promise fulfilled')
         setCountries(response.data)
         
       })
@@ -20,13 +19,19 @@ const App = () => {
 
   const handleFiltering = (event) => {
     setNewFilter(event.target.value)
+    setToNull()
   }
+  const click = (countryName) => {
+    setClicked(countryName)
+  }
+  const setToNull = () => {
+    setClicked(null)
+  }
+  
   return (
     <div>
       <Filter newFilter={newFilter} handler={handleFiltering} />
-      <div>
-        <AllCountries countries={countries} newFilter={newFilter} />
-      </div>  
+      <AllCountries countries={countries} newFilter={newFilter} clickButton={click} clicked={clicked} />
     </div>
   )
 }

@@ -2,15 +2,12 @@ import React from 'react'
 
 const Country = (props) => {
   const name = props.name
-  const handleClick = (e) => {
-    e.preventDefault();
-    console.log('Toimii')
-  } 
-
+  const buttonFunction = props.handleClick
+  
   return (
     <div>
       {name}
-      <button onClick={handleClick}>show</button>
+      <button onClick={buttonFunction}>show</button>
     </div>
   )
 }

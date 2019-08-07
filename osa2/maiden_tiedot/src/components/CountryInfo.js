@@ -4,8 +4,7 @@ const CountryInfo = (props) => {
   const languageList = props.languages.map(language => 
     <li key={language.name}>{language.name}</li>)
   
-
-  return (
+    return (
     <div>
       <h2>{props.name}</h2>
       <p>Capital: {props.capital}</p>

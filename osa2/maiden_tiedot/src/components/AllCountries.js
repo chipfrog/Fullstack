@@ -1,15 +1,20 @@
-import React, { useState } from 'react'
-import Country from './Country'
+import React from 'react'
 import CountryInfo from './CountryInfo'
+import Country from './Country';
 
 const showCountries = (props) => {
-  const [ info, setInfo ] = useState(false)
+  
   const countriesToShow = props.countries.filter(country =>
   country.name.toLowerCase().includes(props.newFilter.toLowerCase()))
 
-  const handleClick = (e) => {
-    e.preventDefault();
+  if (props.clicked !== null) {
+    const country = props.countries.find(country => country.name === props.clicked)
     
+    return (
+      <CountryInfo name={country.name} capital={country.capital} 
+      population={country.population} languages={country.languages}
+      flag={country.flag} />
+      )  
   }
   
   if (props.newFilter === '' || countriesToShow.length > 10) {
@@ -22,16 +27,18 @@ const showCountries = (props) => {
     )
   } else if (countriesToShow.length <= 10 && countriesToShow.length > 1) {
     return (
-      countriesToShow.map(country => <p key={country.name}>{country.name}<button onClick={handleClick}>nappi</button></p>)
+      countriesToShow.map(country => <Country key={country.name} 
+        name={country.name} handleClick={() => props.clickButton(country.name)} />)
     )
-  } else {
+    
+  } else if (countriesToShow.length === 1) {
     return (
       <CountryInfo name={countriesToShow[0].name} capital={countriesToShow[0].capital} 
       population={countriesToShow[0].population} languages={countriesToShow[0].languages}
       flag={countriesToShow[0].flag} />
     )
-  }
-  
-  
+  } 
 }
+
+
 export default showCountries
