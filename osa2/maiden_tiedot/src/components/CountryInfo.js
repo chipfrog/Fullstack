@@ -1,10 +1,11 @@
 import React from 'react'
+import Weather from './Weather'
 
 const CountryInfo = (props) => {
   const languageList = props.languages.map(language => 
     <li key={language.name}>{language.name}</li>)
   
-    return (
+  return (
     <div>
       <h2>{props.name}</h2>
       <p>Capital: {props.capital}</p>
@@ -16,7 +17,7 @@ const CountryInfo = (props) => {
       </div>
       <p></p>
         <img src={props.flag} alt="Lippu" width={100} height={100}/>
-      
+      <Weather capital={props.capital} /> 
     </div>
   )
 }

@@ -3,7 +3,6 @@ import CountryInfo from './CountryInfo'
 import Country from './Country';
 
 const showCountries = (props) => {
-  
   const countriesToShow = props.countries.filter(country =>
   country.name.toLowerCase().includes(props.newFilter.toLowerCase()))
 
@@ -14,9 +13,8 @@ const showCountries = (props) => {
       <CountryInfo name={country.name} capital={country.capital} 
       population={country.population} languages={country.languages}
       flag={country.flag} />
-      )  
+    )  
   }
-  
   if (props.newFilter === '' || countriesToShow.length > 10) {
     return (
       'Too many matches, specify another filter'
@@ -39,6 +37,5 @@ const showCountries = (props) => {
     )
   } 
 }
-
 
 export default showCountries

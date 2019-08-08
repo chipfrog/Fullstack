@@ -7,13 +7,13 @@ const App = () => {
   const [ countries, setCountries ] = useState([])
   const [ newFilter, setNewFilter ] = useState('')
   const [ clicked, setClicked ] = useState(null)
+  const [ weather, setWeather ] = useState(null)
 
   useEffect(() => {
     axios
       .get('https://restcountries.eu/rest/v2/all')
       .then(response => {
         setCountries(response.data)
-        
       })
   }, [])
 
@@ -31,7 +31,8 @@ const App = () => {
   return (
     <div>
       <Filter newFilter={newFilter} handler={handleFiltering} />
-      <AllCountries countries={countries} newFilter={newFilter} clickButton={click} clicked={clicked} />
+      <AllCountries countries={countries} newFilter={newFilter} clickButton={click} 
+      clicked={clicked} weather={weather} setWeather={setWeather}/>
     </div>
   )
 }
