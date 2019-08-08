@@ -1,3 +1,6 @@
+HUOM!
+Säätietojen haku ei toimi ilman, että Weather.js-komponentin muuttujan api_key arvoksi laittaa oman apixu-tilin avaimen.
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
