@@ -6,5 +6,4 @@ const blogSchema = mongoose.Schema({
   url: String,
   likes: Number
 })
-
 module.exports = mongoose.model('Blog', blogSchema)
