@@ -13,7 +13,6 @@ beforeEach(async () => {
         let blogObject = new Blog(blog)
         await blogObject.save()
     }
-
 })
 
 test('blogs returned as json', async () => {
