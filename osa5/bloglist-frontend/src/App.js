@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import './index.css'
 
 
 const App = () => {
@@ -10,6 +11,7 @@ const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
+  const [message, setMessage] = useState(null)
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('') 
@@ -43,11 +45,15 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
+      setMessage(`${user.username} logged in!`)
+      setTimeout(() => {
+        setMessage(null)
+      }, 3000)
     } catch (exception) {
-      setErrorMessage('wrong credentials')
+      setErrorMessage('wrong username or password!')
       setTimeout(() => {
         setErrorMessage(null)
-      }, 5000)
+      }, 3000)
     }
     console.log('logging in with', username)
   }
@@ -55,28 +61,42 @@ const App = () => {
     window.localStorage.clear()
     setUser(null)
     window.location.reload()
+    
   }
-  const addBlog = (event) => {
+  const addBlog = async (event) => {
     event.preventDefault()
-    const blogObject = {
-      title: title,
-      author: author,
-      url: url,
+    try {
+      const blogObject = {
+        title: title,
+        author: author,
+        url: url,
+      }
+      blogService.create(blogObject)
+      setTitle('')
+      setAuthor('')
+      setUrl('')
+      setMessage(`${blogObject.title} by ${blogObject.author} added!`)
+      setTimeout(() => {
+        setMessage(null)
+      }, 3000)
+         
+    } catch(exception) {
+      setErrorMessage('Error while adding a new blog')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 3000)
+
     }
-    blogService
-      .create(blogObject)
-      .then(
-        setTitle(''),
-        setAuthor(''),
-        setUrl('')
-      )
-    window.location.reload()  
   }
   
   if (user === null) {
     return (
       <div>
-        { errorMessage }
+        {errorMessage != null &&
+        <div className="error">
+          { errorMessage }
+        </div>
+        } 
         <h2>Log in to application</h2>
         <form onSubmit={handleLogin}>
           <div>
@@ -106,6 +126,11 @@ const App = () => {
 
   return (
     <div>
+      {message != null &&
+      <div className="message">
+        {message}
+      </div>
+      }
       <h2>Blogs</h2>
       <p>{user.name} logged in 
         <button type="submit" onClick={handleLogout}>
