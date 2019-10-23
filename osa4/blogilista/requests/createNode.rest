@@ -1,6 +1,6 @@
 post http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRvaW1pIiwiaWQiOiI1ZGFmNTY1NWFkODgyOTRhMWM3NmVhZGUiLCJpYXQiOjE1NzE3OTg4NDB9.-gkefjl5yXP_Nxa3uPMGHlid0nYtMldELyg8RVIx23A
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RhYWphIiwiaWQiOiI1ZGFmYzk0MTYzZjc1YTFlZTA4ZTdhZGUiLCJpYXQiOjE1NzE4MDE1MjF9.NUHucaoP5CDquD4bHuqX123A1Xg5uzvYyrzgDDYqMtE
 
 {
   "title": "Testilähetys",

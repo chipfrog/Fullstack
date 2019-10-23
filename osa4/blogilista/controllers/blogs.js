@@ -3,14 +3,6 @@ const Blog = require('../models/blog')
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
 
-const getTokenFrom = request => {
-  const authorization = request.get('authorization')
-  if (authorization && authorization.toLowerCase().startsWith('bearer')) {
-    return authorization.substring(7)
-  }
-  return null
-}
-
 blogsRouter.get('/', async (request, response) => {
     const blogs = await Blog
       .find({})
@@ -21,12 +13,10 @@ blogsRouter.get('/', async (request, response) => {
 
 blogsRouter.post('/', async (request, response, next) => {
     const body = request.body
-
-    const token = getTokenFrom(request)
-
+    
     try {
-      const decodedToken = jwt.verify(token, process.env.SECRET)
-      if (!token || !decodedToken.id) {
+      const decodedToken = jwt.verify(request.token, process.env.SECRET)
+      if (!request.token || !decodedToken.id) {
         return response.status(401).json({ error: 'token missing or innvalid' })
       }
       const user = await User.findById(decodedToken.id)
@@ -38,7 +28,7 @@ blogsRouter.post('/', async (request, response, next) => {
         likes: body.likes,
         user: user._id
       })
-      
+
       if (blog.likes === null || blog.likes === undefined) {
         blog.likes = 0
       }
