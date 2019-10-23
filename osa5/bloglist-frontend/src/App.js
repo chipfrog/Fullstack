@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import CreateBlogForm from './components/CreateBlog'
+import Togglable from './components/Togglable'
 import './index.css'
 
 
@@ -14,8 +16,8 @@ const App = () => {
   const [message, setMessage] = useState(null)
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('') 
-
+  const [url, setUrl] = useState('')
+  
   useEffect(() => {
     blogService
       .getAll()
@@ -30,6 +32,8 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
+
+  const blogFormRef = React.createRef()
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -65,6 +69,7 @@ const App = () => {
   }
   const addBlog = async (event) => {
     event.preventDefault()
+    blogFormRef.current.toggleVisibility()
     try {
       const blogObject = {
         title: title,
@@ -141,38 +146,17 @@ const App = () => {
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
-      <h2>Create a new blog</h2>
-      <form onSubmit={addBlog}>
-      <div>
-        Title: 
-          <input 
-          type="text" 
-          value={title} 
-          name="Title"
-          onChange={({ target }) => setTitle(target.value)}
-          />
-      </div>
-      <div>
-        Author:
-          <input
-          type="text"
-          value={author}
-          name="Author"
-          onChange={({ target }) => setAuthor(target.value)}
-          />
-        </div>
-        <div>
-          Url:
-          <input 
-          type="text"
-          value={url}
-          name="Url"
-          onChange={({ target }) => setUrl(target.value)}
-          />
-        </div>
-        <button type="submit">create</button>
-        
-      </form>
+      <Togglable buttonLabel="new blog" ref={blogFormRef}>
+        <CreateBlogForm
+          addBlog={addBlog}
+          setTitle={setTitle}
+          setAuthor={setAuthor}
+          setUrl={setUrl}
+          title={title}
+          author={author}
+          url={url} 
+        />
+      </Togglable>
     </div>
   )
 }
