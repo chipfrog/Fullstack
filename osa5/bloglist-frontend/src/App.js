@@ -134,7 +134,7 @@ const App = () => {
       </div>
     )
   }
-
+  
   return (
     <div>
       {message != null &&
@@ -150,7 +150,7 @@ const App = () => {
       </p>
       
       {sortBlogsByLikes().map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} user={user}/>
       )}
       <Togglable buttonLabel="new blog" ref={blogFormRef}>
         <CreateBlogForm
