@@ -3,7 +3,7 @@ import blogService from '../services/blogs'
 
 const Blog = ({ blog, user }) => {
   const [visibleInfo, setVisibleInfo] = useState(false)
-  
+
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -15,7 +15,6 @@ const Blog = ({ blog, user }) => {
   const toggleVisibility = () => {
     if (visibleInfo === false) {
       setVisibleInfo(true)
-      
     } else if (visibleInfo === true) {
       setVisibleInfo(false)
     }
@@ -25,25 +24,28 @@ const Blog = ({ blog, user }) => {
     blogService.update(blog)
   }
   const deleteBlog = () => {
-    blogService.setToken(user.token)
-    blogService.deleteBlog(blog)
+    const result = window.confirm('Are you sure you want to delete this blog?')
+    if (result === true) {
+      blogService.setToken(user.token)
+      blogService.deleteBlog(blog)
+    }
   }
 
   if (visibleInfo === false) {
     return (
       <div style={blogStyle}>
         <div onClick={() => toggleVisibility()}>
-        {blog.title} {blog.author}
+          {blog.title} {blog.author}
         </div>
       </div>
-  )
+    )
   } else {
     return (
       <div style={blogStyle}>
         <div onClick={() => toggleVisibility()}>
           <p>{blog.title} {blog.author}</p>
         </div>
-        <div>  
+        <div>
           <p>{blog.url}</p>
           <p>{blog.likes} likes <button onClick={addLike}>like</button></p>
           <p>added by {blog.user.name}</p>
@@ -57,5 +59,5 @@ const Blog = ({ blog, user }) => {
     )
   }
 }
-  
+
 export default Blog

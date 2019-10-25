@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 const CreateBlogForm = ({
   addBlog,
@@ -13,38 +14,47 @@ const CreateBlogForm = ({
     <div>
       <h2>Create a new blog</h2>
       <form onSubmit={addBlog}>
-      <div>
-        Title: 
-          <input 
-          type="text" 
-          value={title} 
-          name="Title"
-          onChange={({ target }) => setTitle(target.value)}
+        <div>
+        Title:
+          <input
+            type="text"
+            value={title}
+            name="Title"
+            onChange={({ target }) => setTitle(target.value)}
           />
-      </div>
-      <div>
+        </div>
+        <div>
         Author:
           <input
-          type="text"
-          value={author}
-          name="Author"
-          onChange={({ target }) => setAuthor(target.value)}
+            type="text"
+            value={author}
+            name="Author"
+            onChange={({ target }) => setAuthor(target.value)}
           />
         </div>
         <div>
           Url:
-          <input 
-          type="text"
-          value={url}
-          name="Url"
-          onChange={({ target }) => setUrl(target.value)}
+          <input
+            type="text"
+            value={url}
+            name="Url"
+            onChange={({ target }) => setUrl(target.value)}
           />
         </div>
         <button type="submit">create</button>
-        
       </form>
     </div>
   )
 }
+CreateBlogForm.propTypes = {
+  addBlog: PropTypes.func.isRequired,
+  setTitle: PropTypes.func.isRequired,
+  setAuthor: PropTypes.func.isRequired,
+  setUrl: PropTypes.func.isRequired,
+  title: PropTypes.string.isRequired,
+  author: PropTypes.string.isRequired,
+  url: PropTypes.string.isRequired
+}
+
 
 export default CreateBlogForm

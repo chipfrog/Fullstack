@@ -25,7 +25,7 @@ const update = async updatedBlog => {
 }
 const deleteBlog = async blogToDelete => {
   const config = {
-    headers: {Authorization: token}
+    headers: { Authorization: token }
   }
   const blogsUrl = `${baseUrl}/${blogToDelete.id}`
   const response = await axios.delete(blogsUrl, config)

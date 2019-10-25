@@ -8,7 +8,7 @@ import './index.css'
 
 
 const App = () => {
-  const [username, setUsername] = useState('') 
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
@@ -18,7 +18,6 @@ const App = () => {
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
 
-  
   useEffect(() => {
     blogService
       .getAll()
@@ -66,7 +65,7 @@ const App = () => {
     window.localStorage.clear()
     setUser(null)
     window.location.reload()
-    
+
   }
   const addBlog = async (event) => {
     event.preventDefault()
@@ -85,7 +84,6 @@ const App = () => {
       setTimeout(() => {
         setMessage(null)
       }, 3000)
-         
     } catch(exception) {
       setErrorMessage('Error while adding a new blog')
       setTimeout(() => {
@@ -94,61 +92,76 @@ const App = () => {
 
     }
   }
+/* eslint-disable */ 
+  const requiredFieldsCheck = () => {
+    if (title === undefined ||url === undefined) {
+      const message = 'Title and url are required!'
+      setErrorMessage(message)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 3000)
+
+      return false
+
+    } else {
+      return true
+    }
+  }
+  /* eslint-enable */
+
   const sortBlogsByLikes = () => {
     const sortedBlogs = blogs
     sortedBlogs.sort((a,b) => (a.likes > b.likes) ? -1 : 1)
     return sortedBlogs
   }
-  
+
   if (user === null) {
     return (
       <div>
-        {errorMessage != null &&
+        {errorMessage !== null &&
         <div className="error">
           { errorMessage }
         </div>
-        } 
+        }
         <h2>Log in to application</h2>
         <form onSubmit={handleLogin}>
           <div>
-            Username 
-              <input 
-              type="text" 
-              value={username} 
+            Username
+            <input
+              type="text"
+              value={username}
               name="Username"
               onChange={({ target }) => setUsername(target.value)}
-              />
+            />
           </div>
           <div>
             Password
-              <input
+            <input
               type="password"
               value={password}
               name="Password"
               onChange={({ target }) => setPassword(target.value)}
-              />
+            />
           </div>
           <button type="submit">login</button>
-          
         </form>
       </div>
     )
   }
-  
+
   return (
     <div>
-      {message != null &&
+      {message !== null &&
       <div className="message">
         {message}
       </div>
       }
       <h2>Blogs</h2>
-      <p>{user.name} logged in 
+      <p>{user.name} logged in
         <button type="submit" onClick={handleLogout}>
           logout
         </button>
       </p>
-      
       {sortBlogsByLikes().map(blog =>
         <Blog key={blog.id} blog={blog} user={user}/>
       )}
@@ -160,11 +173,11 @@ const App = () => {
           setUrl={setUrl}
           title={title}
           author={author}
-          url={url} 
+          url={url}
         />
       </Togglable>
     </div>
   )
 }
-  
-export default App;
+
+export default App
