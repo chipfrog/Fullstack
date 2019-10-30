@@ -67,6 +67,16 @@ const App = () => {
     window.location.reload()
 
   }
+
+  const requiredFieldsOk = (title, url) => {
+    if (title === ''||url === '') {
+      console.log('no title or url')
+      return false
+    } else {
+      console.log('everything ok')
+      return true
+    }
+  }
   const addBlog = async (event) => {
     event.preventDefault()
     blogFormRef.current.toggleVisibility()
@@ -76,14 +86,21 @@ const App = () => {
         author: author,
         url: url,
       }
-      blogService.create(blogObject)
-      setTitle('')
-      setAuthor('')
-      setUrl('')
-      setMessage(`${blogObject.title} by ${blogObject.author} added!`)
-      setTimeout(() => {
-        setMessage(null)
-      }, 3000)
+      if (requiredFieldsOk(blogObject.title, blogObject.url)) {
+        blogService.create(blogObject)
+        setTitle('')
+        setAuthor('')
+        setUrl('')
+        setMessage(`${blogObject.title} by ${blogObject.author} added!`)
+        setTimeout(() => {
+          setMessage(null)
+        }, 3000)
+      } else {
+        setErrorMessage('Title and url are required!')
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 3000)}
+
     } catch(exception) {
       setErrorMessage('Error while adding a new blog')
       setTimeout(() => {
@@ -92,22 +109,6 @@ const App = () => {
 
     }
   }
-/* eslint-disable */ 
-  const requiredFieldsCheck = () => {
-    if (title === undefined ||url === undefined) {
-      const message = 'Title and url are required!'
-      setErrorMessage(message)
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 3000)
-
-      return false
-
-    } else {
-      return true
-    }
-  }
-  /* eslint-enable */
 
   const sortBlogsByLikes = () => {
     const sortedBlogs = blogs
@@ -154,6 +155,11 @@ const App = () => {
       {message !== null &&
       <div className="message">
         {message}
+      </div>
+      }
+      {errorMessage !== null &&
+      <div className="error">
+        {errorMessage}
       </div>
       }
       <h2>Blogs</h2>

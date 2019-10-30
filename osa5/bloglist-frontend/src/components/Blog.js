@@ -3,6 +3,7 @@ import blogService from '../services/blogs'
 
 const Blog = ({ blog, user }) => {
   const [visibleInfo, setVisibleInfo] = useState(false)
+  const [likes, setLikes] = useState(blog.likes)
 
   const blogStyle = {
     paddingTop: 10,
@@ -19,8 +20,10 @@ const Blog = ({ blog, user }) => {
       setVisibleInfo(false)
     }
   }
-  const addLike = () => {
-    blog.likes += 1
+  const addLike = async () => {
+    let updatedLikes = await likes + 1
+    setLikes(updatedLikes)
+    blog.likes = updatedLikes
     blogService.update(blog)
   }
   const deleteBlog = () => {
@@ -47,7 +50,7 @@ const Blog = ({ blog, user }) => {
         </div>
         <div>
           <p>{blog.url}</p>
-          <p>{blog.likes} likes <button onClick={addLike}>like</button></p>
+          <p>{likes} likes <button onClick={addLike}>like</button></p>
           <p>added by {blog.user.name}</p>
         </div>
         {user.username === blog.user.username &&
