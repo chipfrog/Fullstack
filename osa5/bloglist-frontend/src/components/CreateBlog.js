@@ -3,13 +3,15 @@ import PropTypes from 'prop-types'
 
 const CreateBlogForm = ({
   addBlog,
-  setTitle,
-  setAuthor,
-  setUrl,
   title,
   author,
   url
 }) => {
+  const noReset = (field) => {
+    let { reset, ...rest } = field
+    return rest
+  }
+
   return (
     <div>
       <h2>Create a new blog</h2>
@@ -17,28 +19,19 @@ const CreateBlogForm = ({
         <div>
         Title:
           <input
-            type="text"
-            value={title}
-            name="Title"
-            onChange={({ target }) => setTitle(target.value)}
+            {...noReset(title)}
           />
         </div>
         <div>
         Author:
           <input
-            type="text"
-            value={author}
-            name="Author"
-            onChange={({ target }) => setAuthor(target.value)}
+            {...noReset(author)}
           />
         </div>
         <div>
           Url:
           <input
-            type="text"
-            value={url}
-            name="Url"
-            onChange={({ target }) => setUrl(target.value)}
+            {...noReset(url)}
           />
         </div>
         <button type="submit">create</button>
@@ -48,12 +41,9 @@ const CreateBlogForm = ({
 }
 CreateBlogForm.propTypes = {
   addBlog: PropTypes.func.isRequired,
-  setTitle: PropTypes.func.isRequired,
-  setAuthor: PropTypes.func.isRequired,
-  setUrl: PropTypes.func.isRequired,
-  title: PropTypes.string.isRequired,
-  author: PropTypes.string.isRequired,
-  url: PropTypes.string.isRequired
+  title: PropTypes.object.isRequired,
+  author: PropTypes.object.isRequired,
+  url: PropTypes.object.isRequired
 }
 
 

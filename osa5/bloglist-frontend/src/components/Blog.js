@@ -31,6 +31,7 @@ const Blog = ({ blog, user }) => {
     if (result === true) {
       blogService.setToken(user.token)
       blogService.deleteBlog(blog)
+      window.location.reload()
     }
   }
 

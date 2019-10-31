@@ -4,19 +4,20 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import CreateBlogForm from './components/CreateBlog'
 import Togglable from './components/Togglable'
+import  { useField } from './hooks'
 import './index.css'
 
 
 const App = () => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+  const username = useField('text')
+  const password = useField('password')
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
   const [message, setMessage] = useState(null)
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
+  const title = useField('text')
+  const author = useField('text')
+  const url = useField('text')
 
   useEffect(() => {
     blogService
@@ -33,33 +34,41 @@ const App = () => {
     }
   }, [])
 
+  const noReset = (field) => {
+    let { reset, ...rest } = field
+    return rest
+  }
+
   const blogFormRef = React.createRef()
 
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
-      const user = await loginService.login({
-        username, password,
-      })
-
+      const credentials = {
+        username: username.value,
+        password: password.value
+      }
+      console.log(credentials)
+      const user = await loginService.login(credentials)
       window.localStorage.setItem(
         'loggedUser', JSON.stringify(user)
       )
       blogService.setToken(user.token)
       setUser(user)
-      setUsername('')
-      setPassword('')
+      username.reset()
+      password.reset()
       setMessage(`${user.username} logged in!`)
       setTimeout(() => {
         setMessage(null)
       }, 3000)
     } catch (exception) {
+      console.log(exception)
       setErrorMessage('wrong username or password!')
       setTimeout(() => {
         setErrorMessage(null)
       }, 3000)
     }
-    console.log('logging in with', username)
+    console.log('logging in with', username.value)
   }
   const handleLogout =  () => {
     window.localStorage.clear()
@@ -67,9 +76,8 @@ const App = () => {
     window.location.reload()
 
   }
-
-  const requiredFieldsOk = (title, url) => {
-    if (title === ''||url === '') {
+  const requiredFieldsOk = () => {
+    if (title.value === ''|| url.value === '') {
       console.log('no title or url')
       return false
     } else {
@@ -82,16 +90,19 @@ const App = () => {
     blogFormRef.current.toggleVisibility()
     try {
       const blogObject = {
-        title: title,
-        author: author,
-        url: url,
+        title: title.value,
+        author: author.value,
+        url: url.value,
       }
       if (requiredFieldsOk(blogObject.title, blogObject.url)) {
-        blogService.create(blogObject)
-        setTitle('')
-        setAuthor('')
-        setUrl('')
+        await blogService.create(blogObject)
+        title.reset()
+        author.reset()
+        url.reset()
+        const updatedBlogs = await blogService.getAll()
+        setBlogs(updatedBlogs)
         setMessage(`${blogObject.title} by ${blogObject.author} added!`)
+        console.log(title)
         setTimeout(() => {
           setMessage(null)
         }, 3000)
@@ -118,7 +129,7 @@ const App = () => {
 
   if (user === null) {
     return (
-      <div>
+      <div className='login'>
         {errorMessage !== null &&
         <div className="error">
           { errorMessage }
@@ -129,19 +140,13 @@ const App = () => {
           <div>
             Username
             <input
-              type="text"
-              value={username}
-              name="Username"
-              onChange={({ target }) => setUsername(target.value)}
+              {...noReset(username)}
             />
           </div>
           <div>
             Password
             <input
-              type="password"
-              value={password}
-              name="Password"
-              onChange={({ target }) => setPassword(target.value)}
+              {...noReset(password)}
             />
           </div>
           <button type="submit">login</button>
@@ -149,9 +154,8 @@ const App = () => {
       </div>
     )
   }
-
   return (
-    <div>
+    <div className='allBlogs'>
       {message !== null &&
       <div className="message">
         {message}
@@ -162,21 +166,20 @@ const App = () => {
         {errorMessage}
       </div>
       }
-      <h2>Blogs</h2>
-      <p>{user.name} logged in
-        <button type="submit" onClick={handleLogout}>
+      <div className='blogs'>
+        <h2>Blogs</h2>
+        <p>{user.name} logged in
+          <button type="submit" onClick={handleLogout}>
           logout
-        </button>
-      </p>
-      {sortBlogsByLikes().map(blog =>
-        <Blog key={blog.id} blog={blog} user={user}/>
-      )}
+          </button>
+        </p>
+        {sortBlogsByLikes().map(blog =>
+          <Blog key={blog.id} blog={blog} user={user}/>
+        )}
+      </div>
       <Togglable buttonLabel="new blog" ref={blogFormRef}>
         <CreateBlogForm
           addBlog={addBlog}
-          setTitle={setTitle}
-          setAuthor={setAuthor}
-          setUrl={setUrl}
           title={title}
           author={author}
           url={url}
