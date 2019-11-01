@@ -21,7 +21,7 @@ describe('<App />', () => {
     expect(component.container).not.toHaveTextContent(
       'Blogs'
     )
-})
+  })
 
   test('blogs are rendered when user is logged in', async () => {
     const user = {

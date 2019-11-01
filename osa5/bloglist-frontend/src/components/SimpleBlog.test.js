@@ -20,7 +20,7 @@ test('renders blog information', () => {
 
 })
 
-test('clicking button calls event handler once', async () => {
+test('clicking button twice calls event handler twice', async () => {
   const blog = {
     title: 'Urheilublogi',
     author: 'Teppo Testaaja',
