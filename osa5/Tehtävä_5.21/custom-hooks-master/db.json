@@ -1,0 +1,55 @@
+{
+  "notes": [
+    {
+      "content": "custom-hooks are awesome!",
+      "id": 1
+    },
+    {
+      "content": "best feature ever <3",
+      "id": 2
+    },
+    {
+      "content": "Testi",
+      "id": 3
+    },
+    {
+      "content": "Uusi note",
+      "id": 4
+    },
+    {
+      "content": "Toimii!",
+      "id": 5
+    },
+    {
+      "content": "wasdasdsa",
+      "id": 6
+    }
+  ],
+  "persons": [
+    {
+      "name": "mluukkai",
+      "number": "040-5483923",
+      "id": 1
+    },
+    {
+      "name": "Pelle Peloton",
+      "number": "123244213234214",
+      "id": 2
+    },
+    {
+      "name": "Aku Ankka",
+      "number": "2132142432",
+      "id": 3
+    },
+    {
+      "name": "Aku Ankka",
+      "number": "2132142432",
+      "id": 4
+    },
+    {
+      "name": "Uusi Uuno",
+      "number": "23454325243",
+      "id": 5
+    }
+  ]
+}
