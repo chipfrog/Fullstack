@@ -32,7 +32,10 @@ const reducer = (state = initialState, action) => {
         anecdote.id !== id ? anecdote : updatedAnecdote
       )
     case 'NEW_ANECDOTE':
-      return [...state, action.data]   
+      return [...state, action.data]
+    
+    case 'SORT_BY_VOTES':
+      return state.sort((a, b) => (a.votes <= b.votes ? 1 : -1))
     
     default:
         return state
@@ -53,6 +56,11 @@ export const newAnecdote = (content) => {
       id: getId(),
       votes: 0
     }
+  }
+}
+export const sortByVotes = () => {
+  return {
+    type: 'SORT_BY_VOTES'
   }
 }
 
