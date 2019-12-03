@@ -1,9 +1,18 @@
 import React from 'react'
 import { voteAnecdote, sortByVotes } from '../reducers/anecdoteReducer'
-import { setNotification, hideNotification } from '../reducers/notificationReducer'
+import { setNotification } from '../reducers/notificationReducer' 
 
 const Anecdotes = (props) => {
-  const anecdotes = props.store.getState().anecdotes
+  const { anecdotes, filter } = props.store.getState()
+  console.log(anecdotes)
+  console.log(filter)
+  const anecdotesToShow = () => {
+    if ( filter !== null ) {
+      return anecdotes.filter(anecdote => 
+        anecdote.content.includes(filter))
+    }
+    return anecdotes
+  }
 
   const vote = (id) => {
     props.store.dispatch(voteAnecdote(id))
@@ -16,7 +25,7 @@ const Anecdotes = (props) => {
 
   return (
     <div>
-      {anecdotes.map(anecdote =>
+      {anecdotesToShow().map(anecdote =>
       <div key={anecdote.id}>
         <div>
           {anecdote.content}
