@@ -4,18 +4,11 @@ import { voteAnecdote, sortByVotes } from '../reducers/anecdoteReducer'
 import { setNotification } from '../reducers/notificationReducer' 
 
 const Anecdotes = (props) => {
-  const anecdotesToShow = () => {
-    if ( props.filter !== null ) {
-      return props.anecdotes.filter(anecdote => 
-        anecdote.content.includes(props.filter))
-    }
-    return props.anecdotes
-  }
-
+  
   const vote = (id) => {
     props.voteAnecdote(id)
     props.sortByVotes()
-    props.setNotification(`You voted '${props.anecdotes.find(n => n.id === id).content}'`)
+    props.setNotification(`You voted '${props.visibleAnecdotes.find(n => n.id === id).content}'`)
     setTimeout(() => 
       props.setNotification(null),
       5000)
@@ -23,7 +16,7 @@ const Anecdotes = (props) => {
 
   return (
     <div>
-      {anecdotesToShow().map(anecdote =>
+      {props.visibleAnecdotes.map(anecdote =>
       <div key={anecdote.id}>
         <div>
           {anecdote.content}
@@ -37,11 +30,18 @@ const Anecdotes = (props) => {
     </div>
   )
 }
+const anecdotesToShow = ({ anecdotes, filter }) => {
+  if ( filter !== null ) {
+    return anecdotes.filter(anecdote => 
+      anecdote.content.includes(filter))
+  }
+  return anecdotes
+}
+
+
 const mapStateToProps = (state) => {
   return {
-    anecdotes: state.anecdotes,
-    filter: state.filter,
-    notification: state.notification
+    visibleAnecdotes: anecdotesToShow(state)
   }
 }
 const mapDispatchToProps = {
