@@ -25,7 +25,7 @@ const anecdoteReducer = (state = [], action) => {
       return sortAnecdotes(action.data)
     
     default:
-        return state
+      return state
        
   }
 }

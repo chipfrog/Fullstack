@@ -6,12 +6,8 @@ import { setNotification } from '../reducers/notificationReducer'
 const Anecdotes = (props) => {
   
   const vote = (anecdote) => {
-    console.log(anecdote)
     props.voteAnecdote(anecdote)
-    props.setNotification(`You voted '${props.visibleAnecdotes.find(n => n.id === anecdote.id).content}'`)
-    setTimeout(() => 
-      props.setNotification(null),
-      5000)
+    props.setNotification(`You voted '${anecdote.content}'`, 5)
   }
 
   return (
@@ -37,8 +33,6 @@ const anecdotesToShow = ({ anecdotes, filter }) => {
   }
   return anecdotes
 }
-
-
 const mapStateToProps = (state) => {
   return {
     visibleAnecdotes: anecdotesToShow(state)

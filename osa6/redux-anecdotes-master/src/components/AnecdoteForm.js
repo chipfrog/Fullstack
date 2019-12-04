@@ -10,10 +10,8 @@ const CreateAnecdote = (props) => {
     event.target.anecdote.value = ''
     props.newAnecdote(content)
 
-    props.setNotification('You created a new note!')
-    setTimeout(() => 
-      props.setNotification(null),
-      5000)
+    props.setNotification('You created a new note!', 5)
+    
   }
 
   return (
