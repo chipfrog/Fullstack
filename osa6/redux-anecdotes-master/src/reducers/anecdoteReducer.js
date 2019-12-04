@@ -1,3 +1,4 @@
+import anecdoteService from '../services/anecdotes'
 
 const anecdoteReducer = (state = [], action) => {
   switch(action.type) {
@@ -17,7 +18,7 @@ const anecdoteReducer = (state = [], action) => {
     case 'SORT_BY_VOTES':
       return state.sort((a, b) => (a.votes <= b.votes ? 1 : -1))
     
-    case 'INIT_NOTES':
+    case 'INIT_ANECDOTES':
       return action.data  
     
     default:
@@ -42,10 +43,13 @@ export const sortByVotes = () => {
     type: 'SORT_BY_VOTES'
   }
 }
-export const initializedAnecdotes = (anecdotes) => {
-  return {
-    type: 'INIT_NOTES',
-    data: anecdotes
+export const initializedAnecdotes = () => {
+  return async dispatch => {
+    const anecdotes = await anecdoteService.getAll()
+    dispatch({
+      type: 'INIT_ANECDOTES',
+      data: anecdotes,
+    })
   }
 }
 
