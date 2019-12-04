@@ -1,5 +1,9 @@
 import anecdoteService from '../services/anecdotes'
 
+const sortAnecdotes = (anecdotes) => {
+  return anecdotes.sort((a, b) => (a.votes <= b.votes ? 1 : -1))
+}  
+
 const anecdoteReducer = (state = [], action) => {
   switch(action.type) {
     case 'VOTE':
@@ -9,27 +13,29 @@ const anecdoteReducer = (state = [], action) => {
         ...anecdoteToUpdate,
         votes: anecdoteToUpdate.votes + 1
       }
-      return state.map(anecdote => 
-        anecdote.id !== id ? anecdote : updatedAnecdote
-      )
+      const updatedAnecdotes = state.map(anecdote => 
+        anecdote.id !== id ? anecdote : updatedAnecdote)
+
+      return sortAnecdotes(updatedAnecdotes)
+      
     case 'NEW_ANECDOTE':
       return [...state, action.data]
     
-    case 'SORT_BY_VOTES':
-      return state.sort((a, b) => (a.votes <= b.votes ? 1 : -1))
-    
     case 'INIT_ANECDOTES':
-      return action.data  
+      return sortAnecdotes(action.data)
     
     default:
         return state
        
   }
 }
-export const voteAnecdote = (id) => {
-  return {
-    type: 'VOTE',
-    data: { id }
+export const voteAnecdote = anecdote => {
+  return async dispatch => {
+    const updatedAnecdote = await anecdoteService.giveVote(anecdote)
+    dispatch({
+      type: 'VOTE',
+      data: updatedAnecdote
+    })
   }
 }
 export const newAnecdote = content => {
@@ -40,11 +46,6 @@ export const newAnecdote = content => {
       data: anecdote,
     })
   } 
-}
-export const sortByVotes = () => {
-  return {
-    type: 'SORT_BY_VOTES'
-  }
 }
 export const initializedAnecdotes = () => {
   return async dispatch => {
