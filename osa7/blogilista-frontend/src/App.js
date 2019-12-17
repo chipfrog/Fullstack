@@ -3,18 +3,20 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import CreateBlogForm from './components/CreateBlog'
+import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import  { useField } from './hooks'
 import './index.css'
-
 
 const App = () => {
   const username = useField('text')
   const password = useField('password')
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
-  const [errorMessage, setErrorMessage] = useState(null)
-  const [message, setMessage] = useState(null)
+  const [notification, setNotification] = useState({
+    message: null
+  })
+
   const title = useField('text')
   const author = useField('text')
   const url = useField('text')
@@ -38,6 +40,10 @@ const App = () => {
     let { reset, ...rest } = field
     return rest
   }
+  const notify = (message, type = 'success') => {
+    setNotification({ message, type })
+    setTimeout(() => setNotification({ message: null }), 10000)
+  }
 
   const blogFormRef = React.createRef()
 
@@ -57,16 +63,10 @@ const App = () => {
       setUser(user)
       username.reset()
       password.reset()
-      setMessage(`${user.username} logged in!`)
-      setTimeout(() => {
-        setMessage(null)
-      }, 3000)
+      notify(`${user.username} logged in!`, 'success')
     } catch (exception) {
       console.log(exception)
-      setErrorMessage('wrong username or password!')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 3000)
+      notify('wrong username or password!', 'error')
     }
     console.log('logging in with', username.value)
   }
@@ -101,41 +101,27 @@ const App = () => {
         url.reset()
         const updatedBlogs = await blogService.getAll()
         setBlogs(updatedBlogs)
-        setMessage(`${blogObject.title} by ${blogObject.author} added!`)
-        console.log(title)
-        setTimeout(() => {
-          setMessage(null)
-        }, 3000)
+        notify(`${blogObject.title} by ${blogObject.author} added!`, 'success')
       } else {
-        setErrorMessage('Title and url are required!')
-        setTimeout(() => {
-          setErrorMessage(null)
-        }, 3000)}
+        notify('Title and url are required!', 'error')
+      }
 
     } catch(exception) {
-      setErrorMessage('Error while adding a new blog')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 3000)
-
+      notify('Error while adding a new blog', 'error')
     }
   }
-
   const sortBlogsByLikes = () => {
     const sortedBlogs = blogs
     sortedBlogs.sort((a,b) => (a.likes > b.likes) ? -1 : 1)
     return sortedBlogs
   }
-
   if (user === null) {
     return (
       <div className='login'>
-        {errorMessage !== null &&
-        <div className="error">
-          { errorMessage }
-        </div>
-        }
         <h2>Log in to application</h2>
+
+        <Notification notification={notification} />
+
         <form onSubmit={handleLogin}>
           <div>
             Username
@@ -156,18 +142,11 @@ const App = () => {
   }
   return (
     <div className='allBlogs'>
-      {message !== null &&
-      <div className="message">
-        {message}
-      </div>
-      }
-      {errorMessage !== null &&
-      <div className="error">
-        {errorMessage}
-      </div>
-      }
       <div className='blogs'>
         <h2>Blogs</h2>
+
+        <Notification notification= {notification} />
+
         <p>{user.name} logged in
           <button type="submit" onClick={handleLogout}>
           logout
