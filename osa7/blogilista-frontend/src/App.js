@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { connect } from 'react-redux'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -6,17 +7,15 @@ import CreateBlogForm from './components/CreateBlog'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import  { useField } from './hooks'
+import { setNotification } from './reducers/notificationReducer'
+
 import './index.css'
 
-const App = () => {
+const App = (props) => {
   const username = useField('text')
   const password = useField('password')
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
-  const [notification, setNotification] = useState({
-    message: null
-  })
-
   const title = useField('text')
   const author = useField('text')
   const url = useField('text')
@@ -40,9 +39,8 @@ const App = () => {
     let { reset, ...rest } = field
     return rest
   }
-  const notify = (message, type = 'success') => {
-    setNotification({ message, type })
-    setTimeout(() => setNotification({ message: null }), 10000)
+  const notify = (message) => {
+    props.setNotification(message, 3)
   }
 
   const blogFormRef = React.createRef()
@@ -63,10 +61,10 @@ const App = () => {
       setUser(user)
       username.reset()
       password.reset()
-      notify(`${user.username} logged in!`, 'success')
+      notify(`${user.username} logged in!`)
     } catch (exception) {
       console.log(exception)
-      notify('wrong username or password!', 'error')
+      notify('wrong username or password!')
     }
     console.log('logging in with', username.value)
   }
@@ -101,13 +99,13 @@ const App = () => {
         url.reset()
         const updatedBlogs = await blogService.getAll()
         setBlogs(updatedBlogs)
-        notify(`${blogObject.title} by ${blogObject.author} added!`, 'success')
+        notify(`${blogObject.title} by ${blogObject.author} added!`)
       } else {
-        notify('Title and url are required!', 'error')
+        notify('Title and url are required!')
       }
 
     } catch(exception) {
-      notify('Error while adding a new blog', 'error')
+      notify('Error while adding a new blog')
     }
   }
   const sortBlogsByLikes = () => {
@@ -120,7 +118,7 @@ const App = () => {
       <div className='login'>
         <h2>Log in to application</h2>
 
-        <Notification notification={notification} />
+        <Notification />
 
         <form onSubmit={handleLogin}>
           <div>
@@ -145,7 +143,7 @@ const App = () => {
       <div className='blogs'>
         <h2>Blogs</h2>
 
-        <Notification notification= {notification} />
+        <Notification />
 
         <p>{user.name} logged in
           <button type="submit" onClick={handleLogout}>
@@ -167,5 +165,9 @@ const App = () => {
     </div>
   )
 }
+const mapDispatchToProps = {
+  setNotification
+}
+const ConnectedApp = connect(null, mapDispatchToProps)(App)
 
-export default App
+export default ConnectedApp
