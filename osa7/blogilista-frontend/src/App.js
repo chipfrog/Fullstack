@@ -8,6 +8,7 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import  { useField } from './hooks'
 import { setNotification } from './reducers/notificationReducer'
+import { initialBlogs } from './reducers/blogReducer'
 
 import './index.css'
 
@@ -21,10 +22,8 @@ const App = (props) => {
   const url = useField('text')
 
   useEffect(() => {
-    blogService
-      .getAll()
-      .then(initialBlogs => setBlogs(initialBlogs))
-  }, [])
+    props.initialBlogs()
+  },[])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
@@ -108,11 +107,7 @@ const App = (props) => {
       notify('Error while adding a new blog')
     }
   }
-  const sortBlogsByLikes = () => {
-    const sortedBlogs = blogs
-    sortedBlogs.sort((a,b) => (a.likes > b.likes) ? -1 : 1)
-    return sortedBlogs
-  }
+
   if (user === null) {
     return (
       <div className='login'>
@@ -138,6 +133,8 @@ const App = (props) => {
       </div>
     )
   }
+  const byLikes = (b1, b2) => b2.likes - b1.likes
+
   return (
     <div className='allBlogs'>
       <div className='blogs'>
@@ -150,8 +147,12 @@ const App = (props) => {
           logout
           </button>
         </p>
-        {sortBlogsByLikes().map(blog =>
-          <Blog key={blog.id} blog={blog} user={user}/>
+        {props.blogs.sort(byLikes).map(blog =>
+          <Blog
+            key={blog.id}
+            blog={blog}
+            user={user}
+          />
         )}
       </div>
       <Togglable buttonLabel="new blog" ref={blogFormRef}>
@@ -165,9 +166,15 @@ const App = (props) => {
     </div>
   )
 }
-const mapDispatchToProps = {
-  setNotification
+const mapStateToProps = (state) => {
+  return {
+    blogs: state.blogs
+  }
 }
-const ConnectedApp = connect(null, mapDispatchToProps)(App)
+const mapDispatchToProps = {
+  setNotification,
+  initialBlogs
+}
+const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(App)
 
 export default ConnectedApp
