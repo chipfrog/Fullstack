@@ -91,12 +91,9 @@ const App = (props) => {
       }
       if (requiredFieldsOk(blogObject.title, blogObject.url)) {
         props.createBlog(blogObject)
-        // await blogService.create(blogObject)
-        // title.reset()
-        // author.reset()
-        // url.reset()
-        // const updatedBlogs = await blogService.getAll()
-        // setBlogs(updatedBlogs)
+        title.reset()
+        author.reset()
+        url.reset()
         notify(`${blogObject.title} by ${blogObject.author} added!`)
       } else {
         notify('Title and url are required!')
@@ -115,8 +112,6 @@ const App = (props) => {
     const ok = window.confirm(`remove blog ${blog.title} by ${blog.author}`)
     if (ok) {
       props.deleteBlog(blog)
-      // const updatedBlog = await blogService.deleteBlog(blog)
-      // setBlogs(blogs.filter(b => b.id !== blog.id))
       notify(`blog ${blog.title} by ${blog.author} removed!`)
     }
   }
@@ -125,9 +120,7 @@ const App = (props) => {
     return (
       <div className='login'>
         <h2>Log in to application</h2>
-
         <Notification />
-
         <form onSubmit={handleLogin}>
           <div>
             Username
@@ -152,9 +145,7 @@ const App = (props) => {
     <div className='allBlogs'>
       <div className='blogs'>
         <h2>Blogs</h2>
-
         <Notification />
-
         <p>{user.name} logged in
           <button type="submit" onClick={handleLogout}>
           logout
