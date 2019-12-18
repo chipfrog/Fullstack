@@ -8,9 +8,7 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import  { useField } from './hooks'
 import { setNotification } from './reducers/notificationReducer'
-import { likeBlog } from './reducers/blogReducer'
-import { initialBlogs } from './reducers/blogReducer'
-
+import { initialBlogs, likeBlog, createBlog } from './reducers/blogReducer'
 import './index.css'
 
 const App = (props) => {
@@ -24,7 +22,7 @@ const App = (props) => {
 
   useEffect(() => {
     props.initialBlogs()
-  },[props.initialBlogs])
+  },[])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
@@ -40,7 +38,7 @@ const App = (props) => {
     return rest
   }
   const notify = (message) => {
-    props.setNotification(message, 3)
+    props.setNotification(message, 5)
   }
 
   const blogFormRef = React.createRef()
@@ -93,12 +91,13 @@ const App = (props) => {
         url: url.value,
       }
       if (requiredFieldsOk(blogObject.title, blogObject.url)) {
-        await blogService.create(blogObject)
-        title.reset()
-        author.reset()
-        url.reset()
-        const updatedBlogs = await blogService.getAll()
-        setBlogs(updatedBlogs)
+        props.createBlog(blogObject)
+        // await blogService.create(blogObject)
+        // title.reset()
+        // author.reset()
+        // url.reset()
+        // const updatedBlogs = await blogService.getAll()
+        // setBlogs(updatedBlogs)
         notify(`${blogObject.title} by ${blogObject.author} added!`)
       } else {
         notify('Title and url are required!')
@@ -191,7 +190,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = {
   setNotification,
   initialBlogs,
-  likeBlog
+  likeBlog,
+  createBlog,
 }
 const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(App)
 

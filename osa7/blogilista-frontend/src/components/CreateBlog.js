@@ -11,7 +11,6 @@ const CreateBlogForm = ({
     let { reset, ...rest } = field
     return rest
   }
-
   return (
     <div>
       <h2>Create a new blog</h2>

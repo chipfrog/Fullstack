@@ -1,15 +1,24 @@
 import blogService from '../services/blogs'
 
-
 const blogReducer = (state = [], action) => {
   switch (action.type) {
   case 'GET_ALL':
     return action.data
   case 'LIKE':
     return action.data
-
+  case 'CREATE':
+    return state.concat(action.data)
   default:
     return state
+  }
+}
+export const createBlog = (blog) => {
+  return async dispatch => {
+    const data = await blogService.create(blog)
+    dispatch({
+      type: 'CREATE',
+      data
+    })
   }
 }
 export const likeBlog = (blog) => {
@@ -23,7 +32,6 @@ export const likeBlog = (blog) => {
     })
   }
 }
-
 export const initialBlogs = () => {
   return async (dispatch) => {
     const data = await blogService.getAll()

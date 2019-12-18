@@ -11,7 +11,6 @@ const Blog = ({ blog, like, remove, creator }) => {
     borderWidth: 1,
     marginBottom: 5
   }
-
   const details = () => (
     <div className='details'>
       <a href={blog.url}>{blog.url}</a>
@@ -31,7 +30,6 @@ const Blog = ({ blog, like, remove, creator }) => {
       {expanded && details()}
     </div>
   )}
-
 
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
