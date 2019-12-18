@@ -8,10 +8,24 @@ const blogReducer = (state = [], action) => {
     return action.data
   case 'CREATE':
     return state.concat(action.data)
+  case 'DELETE':
+    return action.data
   default:
     return state
   }
 }
+export const deleteBlog = (blog) => {
+  return async dispatch => {
+    await blogService.deleteBlog(blog)
+    const data = await blogService.getAll()
+    dispatch({
+      type: 'DELETE',
+      data
+    })
+  }
+}
+
+
 export const createBlog = (blog) => {
   return async dispatch => {
     const data = await blogService.create(blog)

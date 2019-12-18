@@ -8,13 +8,12 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import  { useField } from './hooks'
 import { setNotification } from './reducers/notificationReducer'
-import { initialBlogs, likeBlog, createBlog } from './reducers/blogReducer'
+import { initialBlogs, likeBlog, createBlog, deleteBlog } from './reducers/blogReducer'
 import './index.css'
 
 const App = (props) => {
   const username = useField('text')
   const password = useField('password')
-  const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
   const title = useField('text')
   const author = useField('text')
@@ -115,9 +114,10 @@ const App = (props) => {
   const removeBlog = async (blog) => {
     const ok = window.confirm(`remove blog ${blog.title} by ${blog.author}`)
     if (ok) {
-      const updatedBlog = await blogService.deleteBlog(blog)
-      setBlogs(blogs.filter(b => b.id !== blog.id))
-      notify(`blog ${updatedBlog.title} by ${updatedBlog.author} removed!`)
+      props.deleteBlog(blog)
+      // const updatedBlog = await blogService.deleteBlog(blog)
+      // setBlogs(blogs.filter(b => b.id !== blog.id))
+      notify(`blog ${blog.title} by ${blog.author} removed!`)
     }
   }
 
@@ -192,6 +192,7 @@ const mapDispatchToProps = {
   initialBlogs,
   likeBlog,
   createBlog,
+  deleteBlog
 }
 const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(App)
 
