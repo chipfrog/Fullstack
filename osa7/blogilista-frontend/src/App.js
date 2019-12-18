@@ -8,6 +8,7 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import  { useField } from './hooks'
 import { setNotification } from './reducers/notificationReducer'
+import { likeBlog } from './reducers/blogReducer'
 import { initialBlogs } from './reducers/blogReducer'
 
 import './index.css'
@@ -23,7 +24,7 @@ const App = (props) => {
 
   useEffect(() => {
     props.initialBlogs()
-  },[])
+  },[props.initialBlogs])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
@@ -107,6 +108,19 @@ const App = (props) => {
       notify('Error while adding a new blog')
     }
   }
+  const likeBlog = (blog) => {
+    props.likeBlog(blog)
+    notify(`blog ${blog.title} by ${blog.author} liked!`)
+  }
+
+  const removeBlog = async (blog) => {
+    const ok = window.confirm(`remove blog ${blog.title} by ${blog.author}`)
+    if (ok) {
+      const updatedBlog = await blogService.deleteBlog(blog)
+      setBlogs(blogs.filter(b => b.id !== blog.id))
+      notify(`blog ${updatedBlog.title} by ${updatedBlog.author} removed!`)
+    }
+  }
 
   if (user === null) {
     return (
@@ -151,7 +165,10 @@ const App = (props) => {
           <Blog
             key={blog.id}
             blog={blog}
+            like={likeBlog}
+            remove={removeBlog}
             user={user}
+            creator={blog.user.username === user.username}
           />
         )}
       </div>
@@ -168,12 +185,13 @@ const App = (props) => {
 }
 const mapStateToProps = (state) => {
   return {
-    blogs: state.blogs
+    blogs: state.blogs,
   }
 }
 const mapDispatchToProps = {
   setNotification,
-  initialBlogs
+  initialBlogs,
+  likeBlog
 }
 const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(App)
 

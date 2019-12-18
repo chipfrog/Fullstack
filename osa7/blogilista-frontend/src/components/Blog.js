@@ -1,9 +1,8 @@
 import React, { useState } from 'react'
-import blogService from '../services/blogs'
+import PropTypes from 'prop-types'
 
-const Blog = ({ blog, user }) => {
-  const [visibleInfo, setVisibleInfo] = useState(false)
-  const [likes, setLikes] = useState(blog.likes)
+const Blog = ({ blog, like, remove, creator }) => {
+  const [expanded, setExpanded] = useState(false)
 
   const blogStyle = {
     paddingTop: 10,
@@ -13,55 +12,32 @@ const Blog = ({ blog, user }) => {
     marginBottom: 5
   }
 
-  const toggleVisibility = () => {
-    if (visibleInfo === false) {
-      setVisibleInfo(true)
-    } else if (visibleInfo === true) {
-      setVisibleInfo(false)
-    }
-  }
-  const addLike = async () => {
-    let updatedLikes = await likes + 1
-    setLikes(updatedLikes)
-    blog.likes = updatedLikes
-    blogService.update(blog)
-  }
-  const deleteBlog = () => {
-    const result = window.confirm('Are you sure you want to delete this blog?')
-    if (result === true) {
-      blogService.setToken(user.token)
-      blogService.deleteBlog(blog)
-      window.location.reload()
-    }
-  }
+  const details = () => (
+    <div className='details'>
+      <a href={blog.url}>{blog.url}</a>
+      <div>{blog.likes} likes
+        <button onClick={() => like(blog)}>like</button>
+      </div>
+      <div>added by {blog.user.name}</div>
+      {creator &&(<button onClick={() => remove(blog)}>remove </button>)}
+    </div>
+  )
 
-  if (visibleInfo === false) {
-    return (
-      <div style={blogStyle}>
-        <div onClick={() => toggleVisibility()}>
-          {blog.title} {blog.author}
-        </div>
+  return (
+    <div style={blogStyle}>
+      <div onClick={() => setExpanded(!expanded)} className='name'>
+        {blog.title} {blog.author}
       </div>
-    )
-  } else {
-    return (
-      <div style={blogStyle}>
-        <div onClick={() => toggleVisibility()}>
-          <p>{blog.title} {blog.author}</p>
-        </div>
-        <div>
-          <p>{blog.url}</p>
-          <p>{likes} likes <button onClick={addLike}>like</button></p>
-          <p>added by {blog.user.name}</p>
-        </div>
-        {user.username === blog.user.username &&
-        <div>
-          <button onClick={deleteBlog}>remove</button>
-        </div>
-        }
-      </div>
-    )
-  }
+      {expanded && details()}
+    </div>
+  )}
+
+
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
+  like: PropTypes.func.isRequired,
+  remove: PropTypes.func.isRequired,
+  creator: PropTypes.bool.isRequired
 }
 
 export default Blog
