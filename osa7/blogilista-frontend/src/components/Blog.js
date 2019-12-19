@@ -21,7 +21,6 @@ const Blog = ({ blog, like, remove, creator }) => {
       {creator &&(<button onClick={() => remove(blog)}>remove </button>)}
     </div>
   )
-
   return (
     <div style={blogStyle}>
       <div onClick={() => setExpanded(!expanded)} className='name'>

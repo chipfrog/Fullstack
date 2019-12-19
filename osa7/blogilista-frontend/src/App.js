@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
@@ -8,13 +8,13 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import  { useField } from './hooks'
 import { setNotification } from './reducers/notificationReducer'
+import { setUser, nullUser } from './reducers/userReducer'
 import { initialBlogs, likeBlog, createBlog, deleteBlog } from './reducers/blogReducer'
 import './index.css'
 
 const App = (props) => {
   const username = useField('text')
   const password = useField('password')
-  const [user, setUser] = useState(null)
   const title = useField('text')
   const author = useField('text')
   const url = useField('text')
@@ -27,7 +27,7 @@ const App = (props) => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      setUser(user)
+      props.setUser(user)
       blogService.setToken(user.token)
     }
   }, [])
@@ -49,13 +49,13 @@ const App = (props) => {
         username: username.value,
         password: password.value
       }
-      console.log(credentials)
       const user = await loginService.login(credentials)
+      console.log(`Kirjautunut käyttäjä: ${user}`)
       window.localStorage.setItem(
         'loggedUser', JSON.stringify(user)
       )
       blogService.setToken(user.token)
-      setUser(user)
+      props.setUser(user)
       username.reset()
       password.reset()
       notify(`${user.username} logged in!`)
@@ -67,9 +67,8 @@ const App = (props) => {
   }
   const handleLogout =  () => {
     window.localStorage.clear()
-    setUser(null)
+    props.nullUser()
     window.location.reload()
-
   }
   const requiredFieldsOk = () => {
     if (title.value === ''|| url.value === '') {
@@ -98,7 +97,6 @@ const App = (props) => {
       } else {
         notify('Title and url are required!')
       }
-
     } catch(exception) {
       notify('Error while adding a new blog')
     }
@@ -107,7 +105,6 @@ const App = (props) => {
     props.likeBlog(blog)
     notify(`blog ${blog.title} by ${blog.author} liked!`)
   }
-
   const removeBlog = async (blog) => {
     const ok = window.confirm(`remove blog ${blog.title} by ${blog.author}`)
     if (ok) {
@@ -115,8 +112,7 @@ const App = (props) => {
       notify(`blog ${blog.title} by ${blog.author} removed!`)
     }
   }
-
-  if (user === null) {
+  if (props.user === null) {
     return (
       <div className='login'>
         <h2>Log in to application</h2>
@@ -140,13 +136,12 @@ const App = (props) => {
     )
   }
   const byLikes = (b1, b2) => b2.likes - b1.likes
-
   return (
     <div className='allBlogs'>
       <div className='blogs'>
         <h2>Blogs</h2>
         <Notification />
-        <p>{user.name} logged in
+        <p>{props.user.name} logged in
           <button type="submit" onClick={handleLogout}>
           logout
           </button>
@@ -157,8 +152,8 @@ const App = (props) => {
             blog={blog}
             like={likeBlog}
             remove={removeBlog}
-            user={user}
-            creator={blog.user.username === user.username}
+            user={props.getUser}
+            creator={blog.user.username === props.user.username}
           />
         )}
       </div>
@@ -176,6 +171,7 @@ const App = (props) => {
 const mapStateToProps = (state) => {
   return {
     blogs: state.blogs,
+    user: state.user,
   }
 }
 const mapDispatchToProps = {
@@ -183,7 +179,9 @@ const mapDispatchToProps = {
   initialBlogs,
   likeBlog,
   createBlog,
-  deleteBlog
+  deleteBlog,
+  setUser,
+  nullUser
 }
 const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(App)
 
