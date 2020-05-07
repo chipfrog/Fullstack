@@ -10,29 +10,11 @@ const Menu = ({anecdotes, addNew}) => {
     paddingRight: 5
   }
   return (
-    <Router>
-      <div>
-        <a href='/' style={padding}>anecdotes</a>
-        <a href='/create' style={padding}>create new</a>
-        <a href='/about' style={padding}>about</a>
-      </div>
-
-      <Switch>
-        <Route path="/anecdotes/:id">
-          <Anecdote anecdotes={anecdotes} />
-        </Route>
-        <Route path="/about">
-          <About />
-        </Route>
-        <Route path="/create">
-          <CreateNew addNew={addNew}/>
-        </Route>
-        <Route path="/">
-          <AnecdoteList anecdotes={anecdotes}/>
-        </Route>
-      </Switch>
-
-    </Router>  
+    <div>
+      <a href='/' style={padding}>anecdotes</a>
+      <a href='/create' style={padding}>create new</a>
+      <a href='/about' style={padding}>about</a>
+    </div>
   )
 }
 
@@ -166,11 +148,28 @@ const App = () => {
   }
 
   return (
-    <div>
-      <h1>Software anecdotes</h1>
-      <Menu anecdotes={anecdotes} addNew={addNew}/>
-      <Footer />
-    </div>
+    <Router>
+      <div>
+        <h1>Software anecdotes</h1>
+        <Menu anecdotes={anecdotes} addNew={addNew}/>
+        
+        <Switch>
+          <Route path="/anecdotes/:id">
+            <Anecdote anecdotes={anecdotes} />
+          </Route>
+          <Route path="/about">
+            <About />
+          </Route>
+          <Route path="/create">
+            <CreateNew addNew={addNew}/>
+          </Route>
+          <Route path="/">
+            <AnecdoteList anecdotes={anecdotes}/>
+          </Route>
+        </Switch>
+        <Footer />
+      </div>
+    </Router>  
   )
 }
 
