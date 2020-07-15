@@ -20,23 +20,17 @@ const useResource = (baseUrl) => {
   const [resources, setResources] = useState([])
   
   useEffect(() => {
-    
     const getAll = async () => {
       const request = await axios.get(baseUrl)
-      console.log('Getting data')
       setResources(request.data)
     }
-
     getAll()
 
   }, [baseUrl])
 
-    
   const create = async (resource) => {
     const response = await axios.post(baseUrl, resource)
-    response.id = 'placeholder'
-    console.log('creating')
-    setResources(resources.concat(response))
+    setResources(resources.concat(response.data))
   }
 
   const service = {

@@ -9,40 +9,12 @@
       "id": 2
     },
     {
-      "content": "uusi",
+      "content": "testi",
       "id": 3
     },
     {
-      "content": "dasdsa",
+      "content": "testi 2",
       "id": 4
-    },
-    {
-      "content": "wrwrfwe",
-      "id": 5
-    },
-    {
-      "content": "sadsadsa",
-      "id": 6
-    },
-    {
-      "content": "asdsadsa",
-      "id": 7
-    },
-    {
-      "content": "asdsa",
-      "id": 8
-    },
-    {
-      "content": "wdqwd",
-      "id": 9
-    },
-    {
-      "content": "fdsf",
-      "id": 10
-    },
-    {
-      "content": "sdasdsa",
-      "id": 11
     }
   ],
   "persons": [
@@ -52,29 +24,9 @@
       "id": 1
     },
     {
-      "name": "asdsad",
-      "number": "asdsasda",
+      "name": "Tellervo",
+      "number": "1234567",
       "id": 2
-    },
-    {
-      "name": "sadsa",
-      "number": "asda",
-      "id": 3
-    },
-    {
-      "name": "qwd",
-      "number": "asdsad",
-      "id": 4
-    },
-    {
-      "name": "dwq",
-      "number": "qwdqw",
-      "id": 5
-    },
-    {
-      "name": "qwdwq",
-      "number": "qwdqwd",
-      "id": 6
     }
   ]
 }
