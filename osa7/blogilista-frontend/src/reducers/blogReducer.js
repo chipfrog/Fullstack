@@ -13,6 +13,12 @@ const blogReducer = (state = [], action) => {
       blog.id !== id ? blog : likedBlog
     )
   }
+  case 'DELETE_BLOG': {
+    const id = action.data.id
+    return state.filter(blog =>
+      blog.id !== id
+    )
+  }
   default:
     return state
   }
@@ -28,6 +34,13 @@ export const getBlogs = (blogs) => {
 export const likeBlog = (id) => {
   return {
     type: 'LIKE_BLOG',
+    data: { id }
+  }
+}
+
+export const deleteBlog = (id) => {
+  return {
+    type: 'DELETE_BLOG',
     data: { id }
   }
 }

@@ -9,7 +9,7 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import storage from './utils/storage'
 import { setNotification } from './reducers/notificationReducer'
-import { getBlogs, likeBlog } from './reducers/blogReducer'
+import { getBlogs, likeBlog, deleteBlog } from './reducers/blogReducer'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -67,11 +67,11 @@ const App = () => {
   }
 
   const handleRemove = async (id) => {
-    const blogToRemove = blogs.find(b => b.id === id)
+    const blogToRemove = reduxBlogs.find(b => b.id === id)
     const ok = window.confirm(`Remove blog ${blogToRemove.title} by ${blogToRemove.author}`)
     if (ok) {
       await blogService.remove(id)
-      setBlogs(blogs.filter(b => b.id !== id))
+      dispatch(deleteBlog(id))
     }
   }
 
