@@ -9,7 +9,7 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import storage from './utils/storage'
 import { setNotification } from './reducers/notificationReducer'
-import { getBlogs } from './reducers/blogReducer'
+import { getBlogs, likeBlog } from './reducers/blogReducer'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -60,10 +60,10 @@ const App = () => {
   }
 
   const handleLike = async (id) => {
-    const blogToLike = blogs.find(b => b.id === id)
+    const blogToLike = reduxBlogs.find(b => b.id === id)
     const likedBlog = { ...blogToLike, likes: blogToLike.likes + 1, user: blogToLike.user.id }
     await blogService.update(likedBlog)
-    setBlogs(blogs.map(b => b.id === id ?  { ...blogToLike, likes: blogToLike.likes + 1 } : b))
+    dispatch(likeBlog(id))
   }
 
   const handleRemove = async (id) => {
