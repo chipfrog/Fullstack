@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
@@ -9,9 +9,11 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import storage from './utils/storage'
 import { setNotification } from './reducers/notificationReducer'
+import { getBlogs } from './reducers/blogReducer'
 
 const App = () => {
   const dispatch = useDispatch()
+  const reduxBlogs = useSelector(state => state.blogs)
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
@@ -20,9 +22,9 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs(blogs)
+      dispatch(getBlogs(blogs))
     )
-  }, [])
+  }, [dispatch, blogs])
 
   useEffect(() => {
     const user = storage.loadUser()
@@ -124,7 +126,7 @@ const App = () => {
         <NewBlog createBlog={createBlog} />
       </Togglable>
 
-      {blogs.sort(byLikes).map(blog =>
+      {reduxBlogs.sort(byLikes).map(blog =>
         <Blog
           key={blog.id}
           blog={blog}
