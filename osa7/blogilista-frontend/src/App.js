@@ -9,12 +9,11 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import storage from './utils/storage'
 import { setNotification } from './reducers/notificationReducer'
-import { getBlogs, likeBlog, deleteBlog } from './reducers/blogReducer'
+import { getBlogs, likeBlog, deleteBlog, makeNewBlog } from './reducers/blogReducer'
 
 const App = () => {
   const dispatch = useDispatch()
   const reduxBlogs = useSelector(state => state.blogs)
-  const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -24,7 +23,7 @@ const App = () => {
     blogService.getAll().then(blogs =>
       dispatch(getBlogs(blogs))
     )
-  }, [dispatch, blogs])
+  }, [dispatch])
 
   useEffect(() => {
     const user = storage.loadUser()
@@ -52,7 +51,7 @@ const App = () => {
     try {
       const newBlog = await blogService.create(blog)
       blogFormRef.current.toggleVisibility()
-      setBlogs(blogs.concat(newBlog))
+      dispatch(makeNewBlog(newBlog))
       dispatch(setNotification(`a new blog '${newBlog.title}' by ${newBlog.author} added!`, 'success'))
     } catch(exception) {
       console.log(exception)

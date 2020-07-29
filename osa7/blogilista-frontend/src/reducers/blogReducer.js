@@ -1,5 +1,7 @@
 const blogReducer = (state = [], action) => {
   switch (action.type) {
+  case 'CREATE_BLOG':
+    return [...state, action.data.blog]
   case 'INIT_BLOGS':
     return action.data
   case 'LIKE_BLOG': {
@@ -42,6 +44,13 @@ export const deleteBlog = (id) => {
   return {
     type: 'DELETE_BLOG',
     data: { id }
+  }
+}
+
+export const makeNewBlog = (blog) => {
+  return {
+    type: 'CREATE_BLOG',
+    data: { blog }
   }
 }
 
