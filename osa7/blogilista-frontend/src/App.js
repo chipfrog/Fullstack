@@ -10,11 +10,12 @@ import loginService from './services/login'
 import storage from './utils/storage'
 import { setNotification } from './reducers/notificationReducer'
 import { getBlogs, likeBlog, deleteBlog, makeNewBlog } from './reducers/blogReducer'
+import { login, logout } from './reducers/userReducer'
 
 const App = () => {
   const dispatch = useDispatch()
   const reduxBlogs = useSelector(state => state.blogs)
-  const [user, setUser] = useState(null)
+  const user = useSelector(state => state.user)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const blogFormRef = React.createRef()
@@ -27,7 +28,7 @@ const App = () => {
 
   useEffect(() => {
     const user = storage.loadUser()
-    setUser(user)
+    dispatch(login(user))
   }, [])
 
   const handleLogin = async (event) => {
@@ -39,7 +40,7 @@ const App = () => {
 
       setUsername('')
       setPassword('')
-      setUser(user)
+      dispatch(login(user))
       dispatch(setNotification(`${user.name} welcome back!`, 'success'))
       storage.saveUser(user)
     } catch(exception) {
@@ -75,7 +76,7 @@ const App = () => {
   }
 
   const handleLogout = () => {
-    setUser(null)
+    dispatch(logout())
     storage.logoutUser()
   }
 
