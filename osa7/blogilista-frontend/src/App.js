@@ -4,18 +4,26 @@ import Blog from './components/Blog'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import NewBlog from './components/NewBlog'
+import UserList from './components/UserList'
 
+import { BrowserRouter as Router, Switch, Route, Link
+} from 'react-router-dom'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import userService from './services/users'
 import storage from './utils/storage'
+
 import { setNotification } from './reducers/notificationReducer'
 import { getBlogs, likeBlog, deleteBlog, makeNewBlog } from './reducers/blogReducer'
 import { login, logout } from './reducers/userReducer'
+import { getUsers } from './reducers/userListReducer'
 
 const App = () => {
   const dispatch = useDispatch()
   const reduxBlogs = useSelector(state => state.blogs)
   const user = useSelector(state => state.user)
+  const users = useSelector(state => state.userList)
+
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const blogFormRef = React.createRef()
@@ -29,7 +37,13 @@ const App = () => {
   useEffect(() => {
     const user = storage.loadUser()
     dispatch(login(user))
-  }, [])
+  }, [dispatch])
+
+  useEffect(() => {
+    userService.getAll().then(allUsers => {
+      dispatch(getUsers(allUsers))
+    })
+  }, [dispatch])
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -37,7 +51,6 @@ const App = () => {
       const user = await loginService.login({
         username, password
       })
-
       setUsername('')
       setPassword('')
       dispatch(login(user))
@@ -84,9 +97,7 @@ const App = () => {
     return (
       <div>
         <h2>login to application</h2>
-
         <Notification />
-
         <form onSubmit={handleLogin}>
           <div>
             username
@@ -114,10 +125,20 @@ const App = () => {
 
   return (
     <div>
+      <Router>
+        <div>
+          <Link to="/users">users</Link>
+        </div>
+
+        <Switch>
+          <Route path="/users">
+            <UserList users={users}/>
+          </Route>
+        </Switch>
+      </Router>
+
       <h2>blogs</h2>
-
       <Notification />
-
       <p>
         {user.name} logged in <button onClick={handleLogout}>logout</button>
       </p>
