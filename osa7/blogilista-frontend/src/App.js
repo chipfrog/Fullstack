@@ -43,7 +43,7 @@ const App = () => {
     userService.getAll().then(allUsers => {
       dispatch(getUsers(allUsers))
     })
-  }, [dispatch])
+  }, [dispatch, reduxBlogs])
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -123,39 +123,53 @@ const App = () => {
 
   const byLikes = (b1, b2) => b2.likes - b1.likes
 
+  const padding = {
+    padding: 5
+  }
+
+  const Home = () => {
+
+    return (
+      <div>
+        <Togglable buttonLabel='create new blog'  ref={blogFormRef}>
+          <NewBlog createBlog={createBlog} />
+        </Togglable>
+        <h2>blogs</h2>
+        {reduxBlogs.sort(byLikes).map(blog =>
+          <Blog
+            key={blog.id}
+            blog={blog}
+            handleLike={handleLike}
+            handleRemove={handleRemove}
+            own={user.username===blog.user.username}
+          />
+        )}
+      </div>
+    )
+  }
+
   return (
+
     <div>
       <Router>
         <div>
+          <Link style={padding} to="/">home</Link>
           <Link to="/users">users</Link>
         </div>
+        <Notification />
+        <p>
+          {user.name} logged in <button onClick={handleLogout}>logout</button>
+        </p>
 
         <Switch>
           <Route path="/users">
             <UserList users={users}/>
           </Route>
+          <Route path="/">
+            <Home />
+          </Route>
         </Switch>
       </Router>
-
-      <h2>blogs</h2>
-      <Notification />
-      <p>
-        {user.name} logged in <button onClick={handleLogout}>logout</button>
-      </p>
-
-      <Togglable buttonLabel='create new blog'  ref={blogFormRef}>
-        <NewBlog createBlog={createBlog} />
-      </Togglable>
-
-      {reduxBlogs.sort(byLikes).map(blog =>
-        <Blog
-          key={blog.id}
-          blog={blog}
-          handleLike={handleLike}
-          handleRemove={handleRemove}
-          own={user.username===blog.user.username}
-        />
-      )}
     </div>
   )
 }
