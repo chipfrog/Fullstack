@@ -6,7 +6,7 @@ import Togglable from './components/Togglable'
 import NewBlog from './components/NewBlog'
 import UserList from './components/UserList'
 
-import { BrowserRouter as Router, Switch, Route, Link, useRouteMatch
+import { BrowserRouter as Router, Switch, Route, Link
 } from 'react-router-dom'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -18,14 +18,11 @@ import { getBlogs, likeBlog, deleteBlog, makeNewBlog } from './reducers/blogRedu
 import { login, logout } from './reducers/userReducer'
 import { getUsers } from './reducers/userListReducer'
 import User from './components/User'
-import { getUser } from './reducers/userInfoReducer'
 
 const App = () => {
   const dispatch = useDispatch()
   const reduxBlogs = useSelector(state => state.blogs)
   const loggedInUser = useSelector(state => state.user)
-  const users = useSelector(state => state.userList)
-  const userInfo = useSelector(state => state.userInfo)
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -48,11 +45,6 @@ const App = () => {
     })
   }, [dispatch, reduxBlogs])
 
-  useEffect(() => {
-    userService.getOne().then(user => {
-      dispatch(getUser(user))
-    })
-  }, [dispatch])
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -176,10 +168,10 @@ const App = () => {
 
         <Switch>
           <Route path="/users/:id">
-            <User users={users}/>
+            <User />
           </Route>
           <Route path="/users">
-            <UserList users={users}/>
+            <UserList />
           </Route>
           <Route path="/">
             <Home />
