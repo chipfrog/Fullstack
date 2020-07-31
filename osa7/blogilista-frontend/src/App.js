@@ -6,7 +6,7 @@ import Togglable from './components/Togglable'
 import NewBlog from './components/NewBlog'
 import UserList from './components/UserList'
 
-import { BrowserRouter as Router, Switch, Route, Link
+import { BrowserRouter as Router, Switch, Route, Link, useRouteMatch
 } from 'react-router-dom'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -17,12 +17,15 @@ import { setNotification } from './reducers/notificationReducer'
 import { getBlogs, likeBlog, deleteBlog, makeNewBlog } from './reducers/blogReducer'
 import { login, logout } from './reducers/userReducer'
 import { getUsers } from './reducers/userListReducer'
+import User from './components/User'
+import { getUser } from './reducers/userInfoReducer'
 
 const App = () => {
   const dispatch = useDispatch()
   const reduxBlogs = useSelector(state => state.blogs)
-  const user = useSelector(state => state.user)
+  const loggedInUser = useSelector(state => state.user)
   const users = useSelector(state => state.userList)
+  const userInfo = useSelector(state => state.userInfo)
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -44,6 +47,12 @@ const App = () => {
       dispatch(getUsers(allUsers))
     })
   }, [dispatch, reduxBlogs])
+
+  useEffect(() => {
+    userService.getOne().then(user => {
+      dispatch(getUser(user))
+    })
+  }, [dispatch])
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -93,7 +102,8 @@ const App = () => {
     storage.logoutUser()
   }
 
-  if ( !user ) {
+
+  if ( !loggedInUser ) {
     return (
       <div>
         <h2>login to application</h2>
@@ -131,17 +141,20 @@ const App = () => {
 
     return (
       <div>
+
         <Togglable buttonLabel='create new blog'  ref={blogFormRef}>
           <NewBlog createBlog={createBlog} />
         </Togglable>
+
         <h2>blogs</h2>
+
         {reduxBlogs.sort(byLikes).map(blog =>
           <Blog
             key={blog.id}
             blog={blog}
             handleLike={handleLike}
             handleRemove={handleRemove}
-            own={user.username===blog.user.username}
+            own={loggedInUser.username===blog.user.username}
           />
         )}
       </div>
@@ -158,10 +171,13 @@ const App = () => {
         </div>
         <Notification />
         <p>
-          {user.name} logged in <button onClick={handleLogout}>logout</button>
+          {loggedInUser.name} logged in <button onClick={handleLogout}>logout</button>
         </p>
 
         <Switch>
+          <Route path="/users/:id">
+            <User users={users}/>
+          </Route>
           <Route path="/users">
             <UserList users={users}/>
           </Route>
