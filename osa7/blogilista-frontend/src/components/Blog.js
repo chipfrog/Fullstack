@@ -39,7 +39,9 @@ const Blog = ({ own }) => {
   return (
     <div>
       <h2>{blog.title}</h2>
-      <div>{blog.url}</div>
+      <a target='' href={blog.url}>
+        {blog.url}
+      </a>
       <div>likes {blog.likes}
         <button onClick={() => handleLike(blog.id)}>like</button>
       </div>

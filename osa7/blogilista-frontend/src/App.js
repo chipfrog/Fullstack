@@ -117,15 +117,17 @@ const App = () => {
     marginBottom: 5
   }
 
+  const ylapalkki = {
+    backgroundColor: 'lightgray'
+  }
+
   const Home = () => {
     return (
       <div>
+        <h2>blogs</h2>
         <Togglable buttonLabel='create new blog'  ref={blogFormRef}>
           <NewBlog createBlog={createBlog} />
         </Togglable>
-
-        <h2>blogs</h2>
-
         {blogs.sort(byLikes).map(blog =>
           <Link key ={blog.id} to={`/blogs/${blog.id}`}>
             <div style={blogStyle}>
@@ -140,14 +142,12 @@ const App = () => {
   return (
     <div>
       <Router>
-        <div>
-          <Link style={padding} to="/">home</Link>
-          <Link to="/users">users</Link>
+        <div style={ylapalkki}>
+          <Link style={padding} to="/">blogs</Link>
+          <Link style={padding} to="/users">users</Link>
+          {loggedInUser.name} logged in <button onClick={handleLogout}>logout</button>
         </div>
         <Notification />
-        <p>
-          {loggedInUser.name} logged in <button onClick={handleLogout}>logout</button>
-        </p>
 
         <Switch>
           <Route path="/blogs/:id">
