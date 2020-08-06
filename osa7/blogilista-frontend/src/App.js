@@ -129,11 +129,17 @@ const App = () => {
     padding: 5
   }
 
-  const Home = () => {
+  const blogStyle = {
+    paddingTop: 10,
+    paddingLeft: 2,
+    border: 'solid',
+    borderWidth: 1,
+    marginBottom: 5
+  }
 
+  const Home = () => {
     return (
       <div>
-
         <Togglable buttonLabel='create new blog'  ref={blogFormRef}>
           <NewBlog createBlog={createBlog} />
         </Togglable>
@@ -141,13 +147,18 @@ const App = () => {
         <h2>blogs</h2>
 
         {reduxBlogs.sort(byLikes).map(blog =>
-          <Blog
-            key={blog.id}
-            blog={blog}
-            handleLike={handleLike}
-            handleRemove={handleRemove}
-            own={loggedInUser.username===blog.user.username}
-          />
+          <Link key ={blog.id} to={`/blogs/${blog.id}`}>
+            <div style={blogStyle}>
+              {blog.title} by {blog.author}
+            </div>
+            {/* <Blog
+                key={blog.id}
+                blog={blog}
+                handleLike={handleLike}
+                handleRemove={handleRemove}
+                own={loggedInUser.username===blog.user.username}
+              /> */}
+          </Link>
         )}
       </div>
     )
@@ -167,6 +178,13 @@ const App = () => {
         </p>
 
         <Switch>
+          <Route path="/blogs/:id">
+            <Blog
+              handleLike={handleLike}
+              handleRemove={handleRemove}
+              own={loggedInUser.username}
+            />
+          </Route>
           <Route path="/users/:id">
             <User />
           </Route>
