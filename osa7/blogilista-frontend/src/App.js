@@ -5,8 +5,7 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import NewBlog from './components/NewBlog'
 import UserList from './components/UserList'
-
-import { BrowserRouter as Router, Switch, Route, Link, useHistory
+import { BrowserRouter as Router, Switch, Route, Link
 } from 'react-router-dom'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -14,16 +13,15 @@ import userService from './services/users'
 import storage from './utils/storage'
 
 import { setNotification } from './reducers/notificationReducer'
-import { getBlogs, likeBlog, deleteBlog, makeNewBlog } from './reducers/blogReducer'
+import { getBlogs, makeNewBlog } from './reducers/blogReducer'
 import { login, logout } from './reducers/userReducer'
 import { getUsers } from './reducers/userListReducer'
 import User from './components/User'
 
 const App = () => {
   const dispatch = useDispatch()
-  const reduxBlogs = useSelector(state => state.blogs)
+  const blogs = useSelector(state => state.blogs)
   const loggedInUser = useSelector(state => state.user)
-
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const blogFormRef = React.createRef()
@@ -43,8 +41,7 @@ const App = () => {
     userService.getAll().then(allUsers => {
       dispatch(getUsers(allUsers))
     })
-  }, [dispatch, reduxBlogs])
-
+  }, [dispatch])
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -73,18 +70,10 @@ const App = () => {
     }
   }
 
-  const handleLike = async (id) => {
-    const blogToLike = reduxBlogs.find(b => b.id === id)
-    const likedBlog = { ...blogToLike, likes: blogToLike.likes + 1, user: blogToLike.user.id }
-    await blogService.update(likedBlog)
-    dispatch(likeBlog(id))
-  }
-
   const handleLogout = () => {
     dispatch(logout())
     storage.logoutUser()
   }
-
 
   if ( !loggedInUser ) {
     return (
@@ -137,7 +126,7 @@ const App = () => {
 
         <h2>blogs</h2>
 
-        {reduxBlogs.sort(byLikes).map(blog =>
+        {blogs.sort(byLikes).map(blog =>
           <Link key ={blog.id} to={`/blogs/${blog.id}`}>
             <div style={blogStyle}>
               {blog.title} by {blog.author}
@@ -149,7 +138,6 @@ const App = () => {
   }
 
   return (
-
     <div>
       <Router>
         <div>
@@ -164,7 +152,6 @@ const App = () => {
         <Switch>
           <Route path="/blogs/:id">
             <Blog
-              handleLike={handleLike}
               own={loggedInUser.username}
             />
           </Route>

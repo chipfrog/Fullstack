@@ -3,26 +3,22 @@ import PropTypes from 'prop-types'
 import { useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import blogService from '../services/blogs'
-import { getBlogs, likeBlog, deleteBlog, makeNewBlog } from '../reducers/blogReducer'
-import { BrowserRouter as Router, Switch, Route, Link, useHistory
+import { likeBlog, deleteBlog } from '../reducers/blogReducer'
+import { useHistory
 } from 'react-router-dom'
 
-const Blog = ({ handleLike, own }) => {
+const Blog = ({ own }) => {
   const dispatch = useDispatch()
   const history = useHistory()
   const blogs = useSelector(state => state.blogs)
   const id = useParams().id
   const blog = blogs.find(b => b.id === id)
 
-  const canBeRemoved = own === blog.user.username
-
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
+  if (!blog) {
+    return null
   }
+
+  const canBeRemoved = own === blog.user.username
 
   const handleRemove = async (id) => {
     const ok = window.confirm(`Remove blog ${blog.title} by ${blog.author}`)
@@ -33,22 +29,27 @@ const Blog = ({ handleLike, own }) => {
     }
   }
 
+  const handleLike = async (id) => {
+    const blogToLike = blogs.find(b => b.id === id)
+    const likedBlog = { ...blogToLike, likes: blogToLike.likes + 1, user: blogToLike.user.id }
+    await blogService.update(likedBlog)
+    dispatch(likeBlog(id))
+  }
+
   return (
-    <div style={blogStyle} className='blog'>
-      <div>
-        <div>{blog.url}</div>
-        <div>likes {blog.likes}
-          <button onClick={() => handleLike(blog.id)}>like</button>
-        </div>
-        <div>{blog.user.name}</div>
-        {canBeRemoved&&<button onClick={() => handleRemove(blog.id)}>remove</button>}
+    <div>
+      <h2>{blog.title}</h2>
+      <div>{blog.url}</div>
+      <div>likes {blog.likes}
+        <button onClick={() => handleLike(blog.id)}>like</button>
       </div>
+      <div>added by {blog.user.name}</div>
+      {canBeRemoved&&<button onClick={() => handleRemove(blog.id)}>remove</button>}
     </div>
   )
 }
 
 Blog.propTypes = {
-  handleLike: PropTypes.func.isRequired,
   own: PropTypes.string.isRequired
 }
 

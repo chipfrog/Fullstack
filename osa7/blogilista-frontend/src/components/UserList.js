@@ -4,6 +4,14 @@ import { useSelector } from 'react-redux'
 
 const UserList = () => {
   const users = useSelector(state => state.userList)
+  const blogs = useSelector(state => state.blogs)
+
+  const getUserBlogs = (id) => {
+    const userBlogs = blogs.filter(blog => blog.user.id === id)
+    return (
+      userBlogs.length
+    )
+  }
 
   return (
     <div>
@@ -23,7 +31,7 @@ const UserList = () => {
                   </Link>
                 </li>
               </td>
-              <td>{user.blogs.length}</td>
+              <td>{getUserBlogs(user.id)}</td>
             </tr>
           )}
         </tbody>
