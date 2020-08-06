@@ -11,7 +11,6 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import userService from './services/users'
 import storage from './utils/storage'
-
 import { setNotification } from './reducers/notificationReducer'
 import { getBlogs, makeNewBlog } from './reducers/blogReducer'
 import { login, logout } from './reducers/userReducer'

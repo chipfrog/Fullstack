@@ -4,8 +4,8 @@ import { useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import blogService from '../services/blogs'
 import { likeBlog, deleteBlog } from '../reducers/blogReducer'
-import { useHistory
-} from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
+
 
 const Blog = ({ own }) => {
   const dispatch = useDispatch()
@@ -47,6 +47,12 @@ const Blog = ({ own }) => {
       </div>
       <div>added by {blog.user.name}</div>
       {canBeRemoved&&<button onClick={() => handleRemove(blog.id)}>remove</button>}
+      <h3>comments</h3>
+      <div>
+        {blog.comments.map(comment =>
+          <li key={comment}>{comment}</li>
+        )}
+      </div>
     </div>
   )
 }
