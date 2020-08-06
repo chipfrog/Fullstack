@@ -6,7 +6,7 @@ import Togglable from './components/Togglable'
 import NewBlog from './components/NewBlog'
 import UserList from './components/UserList'
 
-import { BrowserRouter as Router, Switch, Route, Link
+import { BrowserRouter as Router, Switch, Route, Link, useHistory
 } from 'react-router-dom'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -80,15 +80,6 @@ const App = () => {
     dispatch(likeBlog(id))
   }
 
-  const handleRemove = async (id) => {
-    const blogToRemove = reduxBlogs.find(b => b.id === id)
-    const ok = window.confirm(`Remove blog ${blogToRemove.title} by ${blogToRemove.author}`)
-    if (ok) {
-      await blogService.remove(id)
-      dispatch(deleteBlog(id))
-    }
-  }
-
   const handleLogout = () => {
     dispatch(logout())
     storage.logoutUser()
@@ -151,13 +142,6 @@ const App = () => {
             <div style={blogStyle}>
               {blog.title} by {blog.author}
             </div>
-            {/* <Blog
-                key={blog.id}
-                blog={blog}
-                handleLike={handleLike}
-                handleRemove={handleRemove}
-                own={loggedInUser.username===blog.user.username}
-              /> */}
           </Link>
         )}
       </div>
@@ -181,7 +165,6 @@ const App = () => {
           <Route path="/blogs/:id">
             <Blog
               handleLike={handleLike}
-              handleRemove={handleRemove}
               own={loggedInUser.username}
             />
           </Route>
