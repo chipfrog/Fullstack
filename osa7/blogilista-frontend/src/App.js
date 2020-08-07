@@ -150,9 +150,10 @@ const App = () => {
 
         <Switch>
           <Route path="/blogs/:id">
-            <Blog
-              own={loggedInUser.username}
-            />
+            <Blog own={loggedInUser.username}/>
+          </Route>
+          <Route path="/blogs">
+            <Home />
           </Route>
           <Route path="/users/:id">
             <User />

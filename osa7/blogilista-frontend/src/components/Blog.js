@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import blogService from '../services/blogs'
-import { likeBlog, deleteBlog } from '../reducers/blogReducer'
+import { likeBlog, deleteBlog, commentBlog } from '../reducers/blogReducer'
 import { useHistory } from 'react-router-dom'
 
 
@@ -13,6 +13,8 @@ const Blog = ({ own }) => {
   const blogs = useSelector(state => state.blogs)
   const id = useParams().id
   const blog = blogs.find(b => b.id === id)
+
+  const [comment, setComment] = useState('')
 
   if (!blog) {
     return null
@@ -36,18 +38,39 @@ const Blog = ({ own }) => {
     dispatch(likeBlog(id))
   }
 
+  const handleComment = async (event) => {
+    event.preventDefault()
+    try {
+      await blogService.comment(blog.id, comment)
+      dispatch(commentBlog(blog.id, comment))
+      setComment('')
+    } catch(exception) {
+      console.log(exception)
+    }
+  }
+
   return (
     <div>
       <h2>{blog.title}</h2>
-      <a target='' href={blog.url}>
-        {blog.url}
-      </a>
+      <p>{blog.url}</p>
       <div>likes {blog.likes}
         <button onClick={() => handleLike(blog.id)}>like</button>
       </div>
       <div>added by {blog.user.name}</div>
       {canBeRemoved&&<button onClick={() => handleRemove(blog.id)}>remove</button>}
       <h3>comments</h3>
+
+      <form onSubmit={handleComment}>
+        <div>
+          <input
+            id='comment'
+            value={comment}
+            onChange={({ target }) => setComment(target.value)}
+          />
+        </div>
+        <button id='sendComment'>add comment</button>
+      </form>
+
       <div>
         {blog.comments.map(comment =>
           <li key={comment}>{comment}</li>
