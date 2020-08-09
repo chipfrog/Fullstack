@@ -1,0 +1,7 @@
+post http://localhost:3003/api/blogs/5f2c0709c033b64a455e55b6/comments
+Content-Type: application/json
+
+{
+  "comments": "Kommentointi toimii!"
+}
+
