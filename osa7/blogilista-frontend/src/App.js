@@ -16,6 +16,11 @@ import { getBlogs, makeNewBlog } from './reducers/blogReducer'
 import { login, logout } from './reducers/userReducer'
 import { getUsers } from './reducers/userListReducer'
 import User from './components/User'
+import Button from 'react-bootstrap/Button'
+import Form from 'react-bootstrap/Form'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
+import { Navbar } from 'react-bootstrap'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -76,28 +81,38 @@ const App = () => {
 
   if ( !loggedInUser ) {
     return (
-      <div>
-        <h2>login to application</h2>
-        <Notification />
-        <form onSubmit={handleLogin}>
-          <div>
-            username
-            <input
-              id='username'
-              value={username}
-              onChange={({ target }) => setUsername(target.value)}
-            />
-          </div>
-          <div>
-            password
-            <input
-              id='password'
-              value={password}
-              onChange={({ target }) => setPassword(target.value)}
-            />
-          </div>
-          <button id='login'>login</button>
-        </form>
+      <div className="row justify-content-md-center">
+        <div>
+          <h2>login to application</h2>
+          <Notification />
+          <Form onSubmit={handleLogin}>
+            <Form.Group as={Row} controlId='formUsername'>
+              <Col sm='3'>
+                <Form.Label>username</Form.Label>
+              </Col>
+              <Col sm='9'>
+                <Form.Control type='text'
+                  value={username}
+                  onChange={({ target }) => setUsername(target.value)}/>
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row} controlId='formPassword'>
+              <Col sm='3'>
+                <Form.Label>password</Form.Label>
+              </Col>
+              <Col sm='9'>
+                <Form.Control type='password'
+                  value={password}
+                  onChange={({ target }) => setPassword(target.value)}/>
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row} controlId='formButton'>
+              <Col sm='3'>
+                <Button type='submit' id='login'>login</Button>
+              </Col>
+            </Form.Group>
+          </Form>
+        </div>
       </div>
     )
   }
@@ -116,13 +131,9 @@ const App = () => {
     marginBottom: 5
   }
 
-  const ylapalkki = {
-    backgroundColor: 'lightgray'
-  }
-
   const Home = () => {
     return (
-      <div>
+      <div className="container">
         <h2>blogs</h2>
         <Togglable buttonLabel='create new blog'  ref={blogFormRef}>
           <NewBlog createBlog={createBlog} />
@@ -139,13 +150,13 @@ const App = () => {
   }
 
   return (
-    <div>
+    <div className="container">
       <Router>
-        <div style={ylapalkki}>
+        <Navbar bg='light'>
           <Link style={padding} to="/">blogs</Link>
           <Link style={padding} to="/users">users</Link>
-          {loggedInUser.name} logged in <button onClick={handleLogout}>logout</button>
-        </div>
+          {loggedInUser.name} logged in <Button onClick={handleLogout}>logout</Button>
+        </Navbar>
         <Notification />
 
         <Switch>

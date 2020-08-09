@@ -5,6 +5,10 @@ import { useSelector, useDispatch } from 'react-redux'
 import blogService from '../services/blogs'
 import { likeBlog, deleteBlog, commentBlog } from '../reducers/blogReducer'
 import { useHistory } from 'react-router-dom'
+import Button from 'react-bootstrap/Button'
+import Form from 'react-bootstrap/Form'
+import Row from 'react-bootstrap/Row'
+
 
 
 const Blog = ({ own }) => {
@@ -50,26 +54,23 @@ const Blog = ({ own }) => {
   }
 
   return (
-    <div>
+    <div className='container'>
       <h2>{blog.title}</h2>
       <p>{blog.url}</p>
       <div>likes {blog.likes}
-        <button onClick={() => handleLike(blog.id)}>like</button>
+        <Button onClick={() => handleLike(blog.id)}>like</Button>
       </div>
       <div>added by {blog.user.name}</div>
-      {canBeRemoved&&<button onClick={() => handleRemove(blog.id)}>remove</button>}
+      {canBeRemoved&&<Button variant='danger' onClick={() => handleRemove(blog.id)}>remove</Button>}
       <h3>comments</h3>
 
-      <form onSubmit={handleComment}>
-        <div>
-          <input
-            id='comment'
-            value={comment}
-            onChange={({ target }) => setComment(target.value)}
-          />
-        </div>
-        <button id='sendComment'>add comment</button>
-      </form>
+      <Form onSubmit={handleComment}>
+        <Form.Group as={Row} controlId='formComment'>
+          <Form.Control value={comment}
+            onChange={({ target }) => setComment(target.value)}/>
+          <Button type='submit' id='sendComment'>add comment</Button>
+        </Form.Group>
+      </Form>
 
       <div>
         {blog.comments.map(comment =>
