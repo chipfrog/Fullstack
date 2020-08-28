@@ -7,6 +7,7 @@ const mongoose = require('mongoose')
 const Book = require('./models/book')
 const Author = require('./models/author')
 const book = require('./models/book')
+const author = require('./models/author')
 
 mongoose.set('useFindAndModify', false)
 mongoose.set('useCreateIndex', true)
@@ -74,7 +75,7 @@ const resolvers = {
   Query: {
     bookCount: () => Book.collection.countDocuments,
     authorCount: () => Author.collection.countDocuments,
-    allBooks: (root, args) => {
+    allBooks: async (root, args) => {
       // if (args.author !== undefined && args.genre !== undefined) {
       //   return books.filter(book => (book.author === args.author) && (book.genres.includes(args.genre)))
       // }
@@ -84,14 +85,20 @@ const resolvers = {
       // else if (args.author === undefined && args.genre !== undefined) {
       //   return books.filter(book => book.genres.includes(args.genre))
       // }
+      const fecthedBooks = await Book.find({})
+
+      for (b of fecthedBooks) {
+        console.log(b.author)
+      }
+
       return Book.find({})
     },
 
     allAuthors: async () => {
-      // authors.forEach(author => {
-      //   author.bookCount = books.filter(book => book.author === author.name).length
-      // });
-      const authors = await Author.find({})
+      authors = await Author.find({})
+      for (a of authors) {
+        a.bookCount = (await Book.find({ 'author' : a.id })).length
+      }
       return authors
     }
   },
