@@ -1,13 +1,10 @@
 require('dotenv').config()
-const { ApolloServer, gql } = require('apollo-server')
+const { ApolloServer, gql, UserInputError } = require('apollo-server')
 const { v1: uuid } = require('uuid')
 const url = process.env.MONGODB_URI
-
 const mongoose = require('mongoose')
 const Book = require('./models/book')
 const Author = require('./models/author')
-const book = require('./models/book')
-const author = require('./models/author')
 
 mongoose.set('useFindAndModify', false)
 mongoose.set('useCreateIndex', true)
@@ -96,11 +93,17 @@ const resolvers = {
   Mutation: {
     addBook: async (root, args) => {
       const foundAuthor = await Author.findOne({ 'name': args.author.name })
-      
+
       if (!foundAuthor) {
         const newAuthor = new Author({ name: args.author.name })
-        console.log(newAuthor)
-        await newAuthor.save()
+        
+        try {
+          await newAuthor.save()
+        } catch(error) {
+          throw new UserInputError(error.message, {
+            invalidArgs: args,
+          })
+        }
       }
 
       const author = await Author.findOne({ 'name': args.author.name })
@@ -110,7 +113,9 @@ const resolvers = {
         await book.save()
         books.concat(book)
       } catch(error) {
-        console.log(error.message)
+        throw new UserInputError(error.message, {
+          invalidArgs: args,
+        })
       }
       return book
     },
@@ -119,9 +124,15 @@ const resolvers = {
       if (!author) {
         return null
       }
-      author.born = args.born
-      await author.save()
-      authors = authors.map(a => a.name === args.name ? author : a)
+      try {
+        author.born = args.born
+        await author.save()
+        authors = authors.map(a => a.name === args.name ? author : a)
+      } catch(error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args,
+        })
+      }
       return author
     }
   }
