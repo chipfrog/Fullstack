@@ -102,7 +102,7 @@ const resolvers = {
         books = await Book.find({ genres: { $elemMatch: { $eq: args.genre } } })
       } 
       else {
-        books = await Book.find({})
+        books = await Book.find({}).populate('author')
       }
       return books
     },
