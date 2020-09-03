@@ -4,20 +4,16 @@ import { ALL_BOOKS, BOOKS_BY_GENRE } from '../queries'
 
 const Books = (props) => {
   const books = useQuery(ALL_BOOKS)
-  const [genreBooks, setBooks] = useState(null)
-  // const [genre, setGenre] = useState('all genres')
-  const genres = []
+  const [genre, setGenre] = useState('all genres')
   const [getBooks, result] = useLazyQuery(BOOKS_BY_GENRE)
+  const genres = []
 
   const showBooks = (genre) => {
-    getBooks({ variables: { genre: genre } })
+    setGenre(genre)
+    if (genre !== 'all genres') {
+      getBooks({ variables: { genre: genre } })
+    }
   }
-
-  // useEffect(() => {
-  //   if (result.data) {
-  //     setBooks(result.data.allBooks)
-  //   }
-  // }, [result.data])
 
   if (books.loading) {
     return <div>loading...</div>
@@ -32,23 +28,19 @@ const Books = (props) => {
   })
 
   if (result.loading) {
-    console.log('lataa...')
+    console.log('loading...')
     return <div>loading</div>
   }
-
-  // if (result) {
-  //   console.log(result.data)
-  // }
 
   if (!props.show) {
     return null
   }
 
-  if (result.data) {
-    console.log(result.data.allBooks)
+  if (result.data && genre !== 'all genres') {
     return (
       <div>
         <h2>books</h2>
+        <p>in genre {genre}</p>
         <table>
           <tbody>
             <tr>
@@ -60,14 +52,21 @@ const Books = (props) => {
                 published
               </th>
             </tr>
-            {result.data.allBooks.map(a => 
-              <tr key={a.title}>
-                <td>{a.title}</td>
-
+            {result.data.allBooks.map(b => 
+              <tr key={b.title}>
+                <td>{b.title}</td>
+                <td>{b.author.name}</td>
+                <td>{b.published}</td>
               </tr>  
             )}
           </tbody>
         </table>
+        <div>
+        {genres.map(g =>
+          <button key={g} onClick={() => showBooks(g)}>{g}</button>  
+        )}
+        <button key='all genres' onClick={() => showBooks('all genres')}>all genres</button>
+      </div>
       </div>
     )
   }
@@ -86,11 +85,11 @@ const Books = (props) => {
               published
             </th>
           </tr>
-          {books.data.allBooks.map(a =>
-            <tr key={a.title}>
-              <td>{a.title}</td>
-              <td>{a.author.name}</td>
-              <td>{a.published}</td>
+          {books.data.allBooks.map(b =>
+            <tr key={b.title}>
+              <td>{b.title}</td>
+              <td>{b.author.name}</td>
+              <td>{b.published}</td>
             </tr>
           )}
         </tbody>
