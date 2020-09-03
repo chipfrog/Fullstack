@@ -99,7 +99,7 @@ const resolvers = {
     authorCount: () => Author.collection.countDocuments(),
     allBooks: async (root, args) => {
       if (args.genre !== undefined) {
-        books = await Book.find({ genres: { $elemMatch: { $eq: args.genre } } })
+        books = await Book.find({ genres: { $elemMatch: { $eq: args.genre } } }).populate('author')
       } 
       else {
         books = await Book.find({}).populate('author')

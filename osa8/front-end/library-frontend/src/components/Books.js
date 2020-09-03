@@ -13,14 +13,13 @@ const Books = (props) => {
     getBooks({ variables: { genre: genre } })
   }
 
-  useEffect(() => {
-    if (result.data) {
-      console.log('efektissä!')
-      setBooks(result.data.allBooks)
-    }
-  }, [result.data])
+  // useEffect(() => {
+  //   if (result.data) {
+  //     setBooks(result.data.allBooks)
+  //   }
+  // }, [result.data])
 
-  if (books.loading || result.loading) {
+  if (books.loading) {
     return <div>loading...</div>
   }
 
@@ -32,11 +31,21 @@ const Books = (props) => {
     })
   })
 
+  if (result.loading) {
+    console.log('lataa...')
+    return <div>loading</div>
+  }
+
+  // if (result) {
+  //   console.log(result.data)
+  // }
+
   if (!props.show) {
     return null
   }
 
-  if (genreBooks) {
+  if (result.data) {
+    console.log(result.data.allBooks)
     return (
       <div>
         <h2>books</h2>
@@ -51,9 +60,9 @@ const Books = (props) => {
                 published
               </th>
             </tr>
-            {genreBooks.data.allBooks.map(a => 
+            {result.data.allBooks.map(a => 
               <tr key={a.title}>
-                <td>{a.genre}</td>
+                <td>{a.title}</td>
 
               </tr>  
             )}
