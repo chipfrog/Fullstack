@@ -4,10 +4,22 @@ import { ALL_BOOKS } from '../queries'
 
 const Books = (props) => {
   const books = useQuery(ALL_BOOKS)
+  const genres = []
 
   if (books.loading) {
     return <div>loading...</div>
   }
+
+  books.data.allBooks.forEach(book => {
+    book.genres.forEach(genre => {
+      if (!genres.includes(genre)) {
+        genres.push(genre)
+      }
+    })
+  })
+
+  console.log(genres)
+
 
   if (!props.show) {
     return null
@@ -37,6 +49,11 @@ const Books = (props) => {
           )}
         </tbody>
       </table>
+      <div>
+        {genres.map(g => 
+          <button key={g}>{g}</button>  
+        )}
+      </div>
     </div>
   )
 }
