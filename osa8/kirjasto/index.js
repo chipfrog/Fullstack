@@ -65,6 +65,7 @@ const typeDefs = gql`
     authorCount: Int!
     allBooks(author: String, genre: String): [Book!]!
     allAuthors: [Author!]!
+    recommended: [Book!]
     me: User
   }
 
@@ -114,14 +115,24 @@ const resolvers = {
       }
       return authors
     },
-    me: (root, args, context) => {
-      return context.currenUser
+
+    recommended: async (root, args, context) => {
+      user = await context.currentUser
+      if (user) {
+        books = await Book.find({ genres: { $elemMatch: { $eq: context.currentUser.favoriteGenre } } }).populate('author')
+        return books
+      }
+    },
+
+    me: async (root, args, context) => {
+      currentUser = await context.currentUser
+      return currentUser
     }
   },
   Mutation: {
     addBook: async (root, args, context) => {
       const foundAuthor = await Author.findOne({ 'name': args.author.name })
-      const currentUser = context.currenUser
+      const currentUser = context.currentUser
 
       if (!currentUser) {
         throw new AuthenticationError("not authenticated!")
@@ -155,7 +166,7 @@ const resolvers = {
     },
     editAuthor: async (root, args, context) => {
       const author = await Author.findOne({ 'name' : args.name })
-      const currentUser = context.currenUser
+      const currentUser = context.currentUser
 
       if (!currentUser) {
         throw new AuthenticationError("not authenticated!")
@@ -210,8 +221,8 @@ const server = new ApolloServer({
       const decodedToken = jwt.verify(
         auth.substring(7), JWT_KEY
       )
-      const currenUser = await User.findById(decodedToken.id)
-      return { currenUser }
+      const currentUser = await User.findById(decodedToken.id)
+      return { currentUser }
     }
   }
 })
