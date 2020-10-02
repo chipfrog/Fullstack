@@ -1,25 +1,21 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 import Recommended from './components/Recommended'
-import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client'
-import { ME } from './queries'
+import { useApolloClient } from '@apollo/client'
 
 const App = () => {
   const [errorMessage, setErrorMessage] = useState(null)
   const [page, setPage] = useState('authors')
   const [token, setToken] = useState(null)
-  const [getUser, result] = useLazyQuery(ME)
-  const [user, setUser] = useState(null)
   const client = useApolloClient()
 
   const logout = () => {
     setPage('authors')
     setToken(null)
-    setUser(null)
     localStorage.clear()
     client.resetStore()
   }
@@ -31,27 +27,10 @@ const App = () => {
     }, 5000)
   }
 
-  const printUser = () => {
-    getUser()
-
-    if (result.loading) {
-      console.log('loading')
-    }
-
-    if (!result.data) {
-      console.log('not fetched yet')
-    }
-
-    console.log(result.data)
-  }
-
-
-
   return (
     <div>
       <Notification errorMessage={errorMessage}/>
       <div>
-        <button onClick={() => printUser()}>Me?</button>
         <button onClick={() => setPage('authors')}>authors</button>
         <button onClick={() => setPage('books')}>books</button>
         {token &&

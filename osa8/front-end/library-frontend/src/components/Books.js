@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useQuery, useLazyQuery } from '@apollo/client'
 import { ALL_BOOKS, BOOKS_BY_GENRE } from '../queries'
 

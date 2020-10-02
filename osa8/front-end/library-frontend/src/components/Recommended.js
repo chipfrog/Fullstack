@@ -1,15 +1,16 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useQuery } from '@apollo/client'
-import { RECOMMENDED_BOOKS } from '../queries'
+import { ME, RECOMMENDED_BOOKS } from '../queries'
 
 const Recommended = ({ show, notify }) => {
   const books = useQuery(RECOMMENDED_BOOKS)
+  const currentUser = useQuery(ME)
 
   if (!show) {
     return null
   }
 
-  if (books.loading || !books.data) {
+  if (books.loading || !books.data ||currentUser.loading || !currentUser.data) {
     return <div>loading...</div>
   }
 
@@ -18,11 +19,13 @@ const Recommended = ({ show, notify }) => {
     return null
   }
 
-  if (books.data) {
+  console.log(currentUser.data.me.favoriteGenre)
+
+  if (books.data && currentUser.data) {
     return (
       <div>
         <h2>Recommendations</h2>
-        books in your favourite genre 
+        books in your favourite genre {currentUser.data.me.favoriteGenre}
         <table>
             <tbody>
               <tr>
