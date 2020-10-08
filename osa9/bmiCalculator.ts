@@ -1,25 +1,41 @@
-const calculateBmi = (a: number, b: number): string => {
-  const bmi = b / ((a/100) ** 2)
+interface BmiInputs {
+  height: number,
+  weight: number
+}
 
-  if (bmi < 18.5) {
-    console.log(bmi)
-    return "Underweight"
-  }
-  else if (18.5 <= bmi && bmi <= 25) {
-    console.log(bmi)
-    return "Normal (healthy weight)"
-  }
-  else if (25 <= bmi && bmi <= 30) {
-    console.log(bmi)
-    return "Overweight"
-  }
-  else if (bmi > 30) {
-    console.log(bmi)
-    return "Obese"
+const parseArguments = (args: Array<string>): BmiInputs => {
+  if (args.length < 4) throw new Error('Not enough input values')
+  if (args.length > 4) throw new Error('Too many input values')
+
+  if (!isNaN(Number(args[2])) && !isNaN(Number(args[3]))) {
+    return {
+      height: Number(args[2]),
+      weight: Number(args[3])
+    }
+  } else {
+    throw new Error('Input values were not numbers!')
   }
 }
 
-console.log(calculateBmi(180, 74))
-console.log(calculateBmi(200, 45))
-console.log(calculateBmi(180, 95))
-console.log(calculateBmi(150,100))
+const calculateBmi = (a: number, b: number) => {
+  const bmi = b / ((a/100) ** 2)
+  if (bmi < 18.5) {
+    console.log("Underweight")
+  }
+  else if (18.5 <= bmi && bmi <= 25) {
+    console.log("Normal (healthy weight)")   
+  }
+  else if (25 <= bmi && bmi <= 30) {
+    console.log("Overweight")
+  }
+  else if (bmi > 30) {
+    console.log("Obese")
+  }
+}
+
+try {
+  const { height, weight } = parseArguments(process.argv)
+  calculateBmi(height, weight)
+} catch (error) {
+  console.log('Error, something went wrong, message: ', error.message)
+}

@@ -8,6 +8,42 @@ interface Result {
   average: number
 }
 
+interface InputValues {
+  target: number,
+  trainingHours: number[]
+}
+
+const parseArgumentsForExercises = (args: Array<string>): InputValues => {
+  if (args.length < 4) throw new Error('Not enough input values')
+  for (let i = 2; i < args.length; i ++) {
+    if (isNaN(Number(args[i]))) {
+      throw new Error('Some input values were not numbers!')
+    }
+  }
+  const cloneArray = args.slice()
+  cloneArray.splice(0, 3)
+  return {
+    target: Number(args[2]),
+    trainingHours: cloneArray.map(Number)
+  }
+}
+
+const calculateExercises = (target: number, trainingHours: number[]): Result => {
+  const avg = avgTime(trainingHours)
+  const grade = rating(avg, target)
+  const description = feedback(grade)
+
+  return {
+    periodLength: trainingHours.length,
+    trainingDays: aciveDays(trainingHours),
+    success: avg >= target,
+    rating: grade,
+    ratingDescription: description,
+    target: target,
+    average: avg
+  }
+}
+
 const aciveDays = (a: number[]) => {
   const list = [...a]
   for (let i = 0; i < list.length; i ++) {
@@ -47,20 +83,9 @@ const feedback = (grade: number) => {
   return "What was that? Get your act together!"
 }
 
-const calculateExercises = (a: number[], b: number): Result => {
-  const avg = avgTime(a)
-  const grade = rating(avg, b)
-  const description = feedback(grade)
-
-  return {
-    periodLength: a.length,
-    trainingDays: aciveDays(a),
-    success: avg >= b,
-    rating: grade,
-    ratingDescription: description,
-    target: b,
-    average: avg
-  }
+try {
+  const { target, trainingHours } = parseArgumentsForExercises(process.argv)
+  console.log(calculateExercises(target, trainingHours))
+} catch (error) {
+  console.log('Error, something went wrong, message: ', error.message)
 }
-
-console.log(calculateExercises([1, 1, 1, 0, 1, 1, 0], 2))
