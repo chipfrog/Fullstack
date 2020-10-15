@@ -1,4 +1,4 @@
-interface Result {
+export interface Result {
   periodLength: number,
   trainingDays: number,
   success: boolean,
@@ -28,7 +28,7 @@ const parseArgumentsForExercises = (args: Array<string>): InputValues => {
   };
 };
 
-const calculateExercises = (target: number, trainingHours: number[]): Result => {
+export const calculateExercises = (target: number, trainingHours: number[]): Result => {
   const avg = avgTime(trainingHours);
   const grade = rating(avg, target);
   const description = feedback(grade);
