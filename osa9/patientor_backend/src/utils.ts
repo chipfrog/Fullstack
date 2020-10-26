@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { NewPatientEntry, Gender } from './types';
+import { NewPatientEntry, Gender, EntryType, Entry } from './types';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const toNewPatientEntry = (object: any): NewPatientEntry => {
@@ -10,8 +10,28 @@ const toNewPatientEntry = (object: any): NewPatientEntry => {
     ssn: parseSsn(object.ssn),
     gender: parseGender(object.gender),
     occupation: parseOccupation(object.occupation),
-    entries: []
+    entries: [] || parseEntries(object.entries)
   };
+};
+
+const isEntry = (entry: any): entry is Entry => {
+  return Object.values(EntryType).includes(entry.type);
+};
+
+const arrayContainsOnlyEntries = (entries: any[]): entries is Entry[] => {
+  for (let i= 0; i < entries.length; i ++) {
+      if (!isEntry(entries[i])) {
+        return false;
+      }
+    }
+  return true;
+};
+
+const parseEntries = (entries: any): Entry[] => {
+  if (!entries || !arrayContainsOnlyEntries(entries)) {
+    throw new Error("Incorrect or missing entry");
+  }
+  return entries;
 };
 
 const parseName = (name: any): string => {
@@ -35,10 +55,6 @@ const parseGender = (gender: any): Gender => {
   return gender;
 };
 
-const isGender = (param: any): param is Gender => {
-  return Object.values(Gender).includes(param);
-};
-
 const parseOccupation = (occupation: any): string => {
   if (!occupation ||!isString(occupation)) {
     throw new Error('Incorrect or missing occupation');
@@ -59,6 +75,10 @@ const parseDate = (dateOfBirth: any): string => {
 
 const isDate = (dateOfBirth: any): boolean => {
   return Boolean(Date.parse(dateOfBirth));
+};
+
+const isGender = (param: any): param is Gender => {
+  return Object.values(Gender).includes(param);
 };
 
 export default toNewPatientEntry;
