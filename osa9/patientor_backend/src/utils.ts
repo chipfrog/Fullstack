@@ -34,7 +34,8 @@ const toNewHospitalEntry = (object: any): NewEntry => {
     description: parseDescription(object.description),
     date: parseDate(object.date),
     specialist: parseSpecialist(object.specialist),
-    discharge: parseDischarge(object.discharge)
+    discharge: parseDischarge(object.discharge),
+    diagnosisCodes: parseDiagnosisCodes(object.diagnosisCodes)
   };
 };
 
@@ -44,7 +45,8 @@ const toNewOccupationalHealthcareEntry = (object: any): NewEntry => {
     description: parseDescription(object.description),
     date: parseDate(object.date),
     specialist: parseSpecialist(object.specialist),
-    employerName: parseEmployer(object.employerName)
+    employerName: parseEmployer(object.employerName),
+    diagnosisCodes: parseDiagnosisCodes(object.diagnosisCodes)
   };
 };
 
@@ -54,7 +56,8 @@ const toNewHealthCheckEntry = (object: any): NewEntry => {
     description: parseDescription(object.description),
     date: parseDate(object.date),
     specialist: parseSpecialist(object.specialist),
-    healthCheckRating: parseHealthCheckRating(object.healthCheckRating)
+    healthCheckRating: parseHealthCheckRating(object.healthCheckRating),
+    diagnosisCodes: parseDiagnosisCodes(object.diagnosisCodes)
   };
 };
 
@@ -76,6 +79,22 @@ const isDate = (dateOfBirth: any): boolean => {
 };
 
 // Type guards for entry base cases
+
+const parseDiagnosisCodes = (diagnoses: any): string[] => {
+  if (!diagnoses || !Array.isArray(diagnoses) || !everyItemIsString(diagnoses)) {
+    throw new Error("Incorrect diagnosis codes");
+  }
+  return diagnoses;
+};
+
+const everyItemIsString = (list: any): list is string[] => {
+  for (let i= 0; i < list.length; i ++) {
+    if (!isString(list[i])) {
+      return false;
+    }
+  }
+  return true;
+};
 
 const parseType = (entryType: any): EntryType  => {
   if (!entryType || !isType(entryType)) {
@@ -154,8 +173,8 @@ const parseCriteria = (criteria: any): string => {
 // Type guards for HealthCheck
 
 const parseHealthCheckRating = (healthCheckRating: any): HealthCheckRating => {
-  if (!healthCheckRating || !isHealthCheckRating(healthCheckRating)) {
-    throw new Error("Incorrect or missing HealthCheckRating");
+  if (!isHealthCheckRating(healthCheckRating)) {
+    throw new Error(`Incorrect or missing HealthCheckRating`);
   }
   return healthCheckRating;
 };
